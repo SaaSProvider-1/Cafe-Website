@@ -64,15 +64,19 @@
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   }
 
+  .section-padding {
+    padding: 40px 16px;
+  }
+
   @media (min-width: 640px) {
     .section-padding {
-      padding: 64px 24px;
+      padding: 48px 20px;
     }
   }
 
   @media (min-width: 1024px) {
     .section-padding {
-      padding: 50px 32px;
+      padding: 60px 32px;
     }
   }
 
@@ -407,22 +411,71 @@
   }
 
   @keyframes gradient-shift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
   }
 
   /* Glow effect for headings */
   .text-glow {
-    text-shadow: 0 0 10px rgba(251, 191, 36, 0.3), 0 0 20px rgba(251, 191, 36, 0.2), 0 0 30px rgba(251, 191, 36, 0.1);
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.3),
+      0 0 20px rgba(251, 191, 36, 0.2), 0 0 30px rgba(251, 191, 36, 0.1);
   }
 
   /* 3D Text Effect */
   .text-3d {
-    text-shadow: 
-      1px 1px 0px #d97706,
-      2px 2px 0px #b45309,
-      3px 3px 0px #92400e,
-      4px 4px 0px #78350f,
-      5px 5px 10px rgba(0, 0, 0, 0.3);
+    text-shadow: 1px 1px 0px #d97706, 2px 2px 0px #b45309, 3px 3px 0px #92400e,
+      4px 4px 0px #78350f, 5px 5px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Line clamp utilities */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  /* Touch optimization */
+  .touch-manipulation {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+  }
+
+  /* Mobile-specific utilities */
+  @media (max-width: 768px) {
+    .min-h-touch {
+      min-height: 44px;
+    }
+
+    .tap-highlight-transparent {
+      -webkit-tap-highlight-color: transparent;
+    }
+  }
+
+  /* Smooth scrolling for mobile */
+  @media (max-width: 768px) {
+    * {
+      -webkit-overflow-scrolling: touch;
+    }
   }
 }

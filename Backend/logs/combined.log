@@ -1,0 +1,39 @@
+{"level":"info","message":"🚀 Café Elite API server running on port 5000","service":"cafe-elite-api","timestamp":"2025-09-28 16:12:27"}
+{"level":"info","message":"🌍 Environment: development","service":"cafe-elite-api","timestamp":"2025-09-28 16:12:27"}
+{"level":"info","message":"📡 API Base URL: http://localhost:5000/api","service":"cafe-elite-api","timestamp":"2025-09-28 16:12:27"}
+{"level":"warn","message":"⚠️ Mongoose disconnected","service":"cafe-elite-api","timestamp":"2025-09-28 16:12:57"}
+{"level":"info","message":"🚀 Café Elite API server running on port 5000","service":"cafe-elite-api","timestamp":"2025-09-28 16:26:10"}
+{"level":"info","message":"🌍 Environment: development","service":"cafe-elite-api","timestamp":"2025-09-28 16:26:10"}
+{"level":"info","message":"📡 API Base URL: http://localhost:5000/api","service":"cafe-elite-api","timestamp":"2025-09-28 16:26:10"}
+{"level":"info","message":"🔗 Mongoose connected to MongoDB","service":"cafe-elite-api","timestamp":"2025-09-28 16:26:10"}
+{"level":"info","message":"✅ MongoDB connected successfully","service":"cafe-elite-api","timestamp":"2025-09-28 16:26:10"}
+{"level":"info","message":"GET /api/auth/google-url - ::1","service":"cafe-elite-api","timestamp":"2025-09-28 16:26:18"}
+{"level":"info","message":"GET /api/auth/google-url - ::1","service":"cafe-elite-api","timestamp":"2025-09-28 16:27:01"}
+{"level":"info","message":"GET /api/auth/google-url - ::1","service":"cafe-elite-api","timestamp":"2025-09-28 16:29:11"}
+{"level":"info","message":"🚀 Café Elite API server running on port 5000","service":"cafe-elite-api","timestamp":"2025-09-28 16:30:11"}
+{"level":"info","message":"🌍 Environment: development","service":"cafe-elite-api","timestamp":"2025-09-28 16:30:11"}
+{"level":"info","message":"📡 API Base URL: http://localhost:5000/api","service":"cafe-elite-api","timestamp":"2025-09-28 16:30:11"}
+{"level":"info","message":"🔗 Mongoose connected to MongoDB","service":"cafe-elite-api","timestamp":"2025-09-28 16:30:11"}
+{"level":"info","message":"✅ MongoDB connected successfully","service":"cafe-elite-api","timestamp":"2025-09-28 16:30:11"}
+{"level":"info","message":"🛑 SIGINT received. Shutting down gracefully...","service":"cafe-elite-api","timestamp":"2025-09-28 16:30:14"}
+{"level":"info","message":"🚀 Café Elite API server running on port 5000","service":"cafe-elite-api","timestamp":"2025-09-28 16:30:20"}
+{"level":"info","message":"🌍 Environment: development","service":"cafe-elite-api","timestamp":"2025-09-28 16:30:20"}
+{"level":"info","message":"📡 API Base URL: http://localhost:5000/api","service":"cafe-elite-api","timestamp":"2025-09-28 16:30:20"}
+{"level":"info","message":"🔗 Mongoose connected to MongoDB","service":"cafe-elite-api","timestamp":"2025-09-28 16:30:21"}
+{"level":"info","message":"✅ MongoDB connected successfully","service":"cafe-elite-api","timestamp":"2025-09-28 16:30:21"}
+{"level":"info","message":"GET /api/auth/google-url - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-28 16:31:04"}
+{"level":"info","message":"🚀 Café Elite API server running on port 5000","service":"cafe-elite-api","timestamp":"2025-09-28 16:33:07"}
+{"level":"info","message":"🌍 Environment: development","service":"cafe-elite-api","timestamp":"2025-09-28 16:33:07"}
+{"level":"info","message":"📡 API Base URL: http://localhost:5000/api","service":"cafe-elite-api","timestamp":"2025-09-28 16:33:07"}
+{"level":"info","message":"🔗 Mongoose connected to MongoDB","service":"cafe-elite-api","timestamp":"2025-09-28 16:33:08"}
+{"level":"info","message":"✅ MongoDB connected successfully","service":"cafe-elite-api","timestamp":"2025-09-28 16:33:08"}
+{"level":"info","message":"🚀 Café Elite API server running on port 5000","service":"cafe-elite-api","timestamp":"2025-09-28 16:39:36"}
+{"level":"info","message":"🌍 Environment: development","service":"cafe-elite-api","timestamp":"2025-09-28 16:39:36"}
+{"level":"info","message":"📡 API Base URL: http://localhost:5000/api","service":"cafe-elite-api","timestamp":"2025-09-28 16:39:36"}
+{"level":"info","message":"🔗 Mongoose connected to MongoDB","service":"cafe-elite-api","timestamp":"2025-09-28 16:39:37"}
+{"level":"info","message":"✅ MongoDB connected successfully","service":"cafe-elite-api","timestamp":"2025-09-28 16:39:37"}
+{"level":"info","message":"🚀 Café Elite API server running on port 5000","service":"cafe-elite-api","timestamp":"2025-09-28 16:39:55"}
+{"level":"info","message":"🌍 Environment: development","service":"cafe-elite-api","timestamp":"2025-09-28 16:39:55"}
+{"level":"info","message":"📡 API Base URL: http://localhost:5000/api","service":"cafe-elite-api","timestamp":"2025-09-28 16:39:55"}
+{"level":"info","message":"🔗 Mongoose connected to MongoDB","service":"cafe-elite-api","timestamp":"2025-09-28 16:39:56"}
+{"level":"info","message":"✅ MongoDB connected successfully","service":"cafe-elite-api","timestamp":"2025-09-28 16:39:56"}
