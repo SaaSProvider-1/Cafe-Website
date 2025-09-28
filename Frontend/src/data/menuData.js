@@ -180,6 +180,5 @@ export const categories = [
   { id: "espresso", name: "Espresso", icon: "☕" },
   { id: "latte", name: "Lattes", icon: "🥛" },
   { id: "cold", name: "Cold Brew", icon: "🧊" },
-  { id: "specialty", name: "Specialty", icon: "✨" },
-  { id: "pour-over", name: "Pour Over", icon: "🫗" }
+  { id: "specialty", name: "Specialty", icon: "✨" }
 ];

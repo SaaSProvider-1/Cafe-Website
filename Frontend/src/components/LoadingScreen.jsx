@@ -190,7 +190,7 @@ const LoadingScreen = ({ isLoading, onLoadingComplete }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.8 }}
-              className="font-display text-4xl md:text-5xl font-bold text-cream-100 mb-2"
+              className="font-display text-[#4B2E2E] text-4xl md:text-5xl font-bold text-cream-100 mb-2"
             >
               Café Elite
             </motion.h1>
@@ -199,7 +199,7 @@ const LoadingScreen = ({ isLoading, onLoadingComplete }) => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7, duration: 0.8 }}
-              className="text-cream-300 text-lg mb-8 font-medium"
+              className="text-[#B8885A] text-lg mb-8 font-medium"
             >
               Premium Coffee Experience
             </motion.p>
@@ -213,7 +213,7 @@ const LoadingScreen = ({ isLoading, onLoadingComplete }) => {
               transition={{ duration: 0.4 }}
               className="mb-8"
             >
-              <p className="text-cream-200 text-lg font-medium mb-4">
+              <p className="text-[#E6C67B] text-lg font-medium mb-4">
                 {loadingText}
               </p>
             </motion.div>

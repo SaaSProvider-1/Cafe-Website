@@ -64,10 +64,6 @@
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   }
 
-  .section-padding {
-    padding: 64px 16px;
-  }
-
   @media (min-width: 640px) {
     .section-padding {
       padding: 64px 24px;
@@ -76,7 +72,7 @@
 
   @media (min-width: 1024px) {
     .section-padding {
-      padding: 96px 32px;
+      padding: 50px 32px;
     }
   }
 

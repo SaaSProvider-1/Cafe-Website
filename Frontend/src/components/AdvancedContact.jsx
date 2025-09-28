@@ -184,7 +184,7 @@ const AdvancedContact = () => {
             animationType="stretch"
             intensity="high"
           >
-            Let's Connect Over
+            Let's Connect Over&nbsp;
             <StretchableSpan className="block gradient-text bg-gradient-to-r from-cream-200 to-yellow-200 bg-clip-text text-transparent" animationType="glow" intensity="high">
               Great Coffee
             </StretchableSpan>
@@ -223,56 +223,95 @@ const AdvancedContact = () => {
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Contact Information */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Unified Contact Information Card */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
             className="lg:col-span-1"
           >
-            <h3 className="font-display text-2xl font-bold mb-8">
-              Visit Our Café
-            </h3>
+            <motion.div
+              variants={itemVariants}
+              className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 hover:bg-white/20 transition-all duration-300 space-y-8"
+              whileHover={{ scale: 1.02, y: -5 }}
+            >
+              {/* Visit Our Café Section */}
+              <div className="flex items-start gap-4">
+                <motion.div
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 p-4 rounded-2xl flex-shrink-0"
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <MapPin className="w-7 h-7 text-white" />
+                </motion.div>
+                <div>
+                  <h3 className="font-bold text-xl mb-3 text-white">Visit Our Café</h3>
+                  <div className="space-y-1">
+                    <p className="text-cream-200">123 Coffee Street</p>
+                    <p className="text-cream-200">Downtown District</p>
+                    <p className="text-cream-200">City, State 12345</p>
+                  </div>
+                </div>
+              </div>
 
-            <div className="space-y-6">
-              {contactInfo.map((info, index) => {
-                const IconComponent = info.icon;
-                return (
-                  <motion.div
-                    key={index}
-                    variants={itemVariants}
-                    className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/20 transition-all duration-300"
-                    whileHover={{ scale: 1.05, y: -5 }}
-                  >
-                    <div className="flex items-start gap-4">
-                      <motion.div
-                        className={`bg-gradient-to-r ${info.color} p-3 rounded-xl flex-shrink-0`}
-                        whileHover={{ rotate: 360 }}
-                        transition={{ duration: 0.6 }}
-                      >
-                        <IconComponent className="w-6 h-6 text-white" />
-                      </motion.div>
-                      <div>
-                        <h4 className="font-semibold text-lg mb-2">
-                          {info.title}
-                        </h4>
-                        {info.details.map((detail, idx) => (
-                          <p key={idx} className="text-cream-200 text-sm mb-1">
-                            {detail}
-                          </p>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
+              {/* Call Us Section */}
+              <div className="flex items-start gap-4 ">
+                <motion.div
+                  className="bg-gradient-to-r from-green-500 to-green-600 p-4 rounded-2xl flex-shrink-0"
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <Phone className="w-7 h-7 text-white" />
+                </motion.div>
+                <div>
+                  <h3 className="font-bold text-xl mb-3 text-white">Call Us</h3>
+                  <div className="space-y-1">
+                    <p className="text-cream-200">(555) 123-2233</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Email Us Section */}
+              <div className="flex items-start gap-4">
+                <motion.div
+                  className="bg-gradient-to-r from-purple-500 to-purple-600 p-4 rounded-2xl flex-shrink-0"
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <Mail className="w-7 h-7 text-white" />
+                </motion.div>
+                <div>
+                  <h3 className="font-bold text-xl mb-3 text-white">Email Us</h3>
+                  <div className="space-y-1">
+                    <p className="text-cream-200">hello@cafeelite.com</p>                  </div>
+                </div>
+              </div>
+
+              {/* Opening Hours Section */}
+              <div className="flex items-start gap-4">
+                <motion.div
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 p-4 rounded-2xl flex-shrink-0"
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <Clock className="w-7 h-7 text-white" />
+                </motion.div>
+                <div>
+                  <h3 className="font-bold text-xl mb-3 text-white">Opening Hours</h3>
+                  <div className="space-y-1">
+                    <p className="text-cream-200">Mon-Fri: 6:00 AM - 9:00 PM</p>
+                    <p className="text-cream-200">Sat-Sun: 7:00 AM - 10:00 PM</p>
+                    <p className="text-cream-200">Holidays: 8:00 AM - 6:00 PM</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
 
             {/* Interactive Map Placeholder */}
             <motion.div
               variants={itemVariants}
-              className="mt-8 bg-white/10 backdrop-blur-sm rounded-2xl p-6 h-48 flex items-center justify-center hover:bg-white/20 transition-all duration-300"
+              className="mt-6 bg-white/10 backdrop-blur-sm rounded-2xl p-6 h-48 flex items-center justify-center hover:bg-white/20 transition-all duration-300"
               whileHover={{ scale: 1.02 }}
             >
               <div className="text-center">
@@ -304,7 +343,7 @@ const AdvancedContact = () => {
                   transition={{ duration: 0.3 }}
                 >
                   {/* Basic Information */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                     <motion.div variants={itemVariants}>
                       <label className="block text-cream-200 font-medium mb-2">
                         Full Name *

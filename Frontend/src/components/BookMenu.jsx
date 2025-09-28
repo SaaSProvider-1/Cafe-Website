@@ -154,7 +154,7 @@ const BookMenu = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-8"
         >
           <span className="text-coffee-600 font-semibold text-lg tracking-wider uppercase mb-4 block">
             Our Menu
@@ -170,7 +170,7 @@ const BookMenu = () => {
         </motion.div>
 
         {/* Book Container */}
-        <div className="flex justify-center items-center min-h-[600px] perspective-1000">
+        <div className="flex justify-center items-center min-h-[500px] perspective-1000">
           <AnimatePresence mode="wait">
             {!isBookOpen ? (
               // Closed Book
@@ -179,11 +179,11 @@ const BookMenu = () => {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 1.1, opacity: 0 }}
-                className="relative cursor-pointer group"
+                className="min-h-[500px] relative cursor-pointer group"
                 onClick={openBook}
               >
                 <motion.div
-                  className="w-80 h-96 bg-gradient-to-br from-amber-800 via-amber-700 to-amber-900 rounded-r-2xl shadow-2xl relative overflow-hidden transform-gpu"
+                  className="w-[400px] h-[500px] bg-gradient-to-br from-amber-800 via-amber-700 to-amber-900 rounded-r-2xl shadow-2xl relative overflow-hidden transform-gpu"
                   whileHover={{
                     scale: 1.05,
                     rotateY: -10,
@@ -207,16 +207,16 @@ const BookMenu = () => {
                         rotate: [0, 5, -5, 0],
                       }}
                       transition={{ duration: 4, repeat: Infinity }}
-                      className="text-6xl mb-4 text-amber-200"
+                      className="text-8xl mb-4 text-amber-200"
                     >
                       ☕
                     </motion.div>
 
-                    <h3 className="font-display text-3xl font-bold text-amber-100 mb-2">
+                    <h3 className="font-display text-4xl font-bold text-amber-100 mb-2">
                       Café Elite
                     </h3>
                     <div className="w-32 h-0.5 bg-amber-300 mb-4"></div>
-                    <h4 className="font-display text-xl text-amber-200 mb-6">
+                    <h4 className="font-display text-2xl text-amber-200 mb-6">
                       Menu Collection
                     </h4>
 
@@ -252,7 +252,7 @@ const BookMenu = () => {
                   transformStyle: "preserve-3d",
                 }}
               >
-                <div className="flex bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[600px] w-[900px] relative">
+                <div className="flex bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[500px] w-[800px] relative">
                   {/* Left Page */}
                   <div className="w-1/2 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-cream-50 to-amber-50">
@@ -293,7 +293,7 @@ const BookMenu = () => {
                           initial="enter"
                           animate="center"
                           exit="exit"
-                          className="absolute inset-0 p-8"
+                          className="absolute inset-0 p-8 pt-5"
                         >
                           {renderPageContent(
                             allPages[currentPage + 1],
@@ -343,13 +343,6 @@ const BookMenu = () => {
                   >
                     <X size={16} />
                   </motion.button>
-
-                  {/* Page Numbers */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-amber-600 text-sm font-medium">
-                    Page {Math.max(1, currentPage)} -{" "}
-                    {Math.min(allPages.length, currentPage + 2)} of{" "}
-                    {allPages.length}
-                  </div>
                 </div>
               </motion.div>
             )}
@@ -372,26 +365,26 @@ const BookMenu = () => {
             <motion.div
               animate={{ rotate: [0, 10, -10, 0] }}
               transition={{ duration: 3, repeat: Infinity }}
-              className="text-6xl mb-6 text-amber-600"
+              className="text-5xl mb-6 text-amber-600"
             >
               ☕
             </motion.div>
             <StretchableH2 
-              className="font-display text-4xl font-bold text-coffee-900 mb-4"
+              className="font-display text-3xl font-bold text-coffee-900 mb-4"
               animationType="stretch"
               intensity="medium"
             >
               Welcome to
             </StretchableH2>
             <StretchableH1 
-              className="font-display text-5xl font-bold gradient-text mb-6"
+              className="font-display text-4xl font-bold gradient-text mb-6"
               animationType="elastic"
               intensity="high"
             >
               Café Elite
             </StretchableH1>
             <div className="w-24 h-0.5 bg-amber-400 mb-6"></div>
-            <p className="text-coffee-700 text-lg italic">
+            <p className="text-coffee-700 text-sm italic">
               "Every cup tells a story"
             </p>
 
@@ -409,7 +402,7 @@ const BookMenu = () => {
         return (
           <div className="h-full">
             <StretchableH2 
-              className="font-display text-3xl font-bold text-coffee-900 mb-8 text-center"
+              className="font-display text-2xl font-bold text-coffee-900 mb-4 text-center"
               animationType="bounce"
               intensity="medium"
             >
@@ -420,29 +413,29 @@ const BookMenu = () => {
                 <motion.button
                   key={category.id}
                   onClick={() => goToCategory(category.id)}
-                  className="bg-white hover:bg-amber-50 p-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-left"
+                  className="bg-white hover:bg-amber-50 p-3 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-left"
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <div className="text-3xl mb-2">{category.icon}</div>
+                  <div className="text-3xl text-center mb-2">{category.icon}</div>
                   <StretchableH3 
-                    className="font-semibold text-coffee-800 mb-2"
+                    className="w-[100%] mb-2 font-semibold text-coffee-800 text-center"
                     animationType="wave"
                     intensity="low"
                   >
                     {category.name}
                   </StretchableH3>
-                  <p className="text-sm text-coffee-600">
+                  <p className="mb-4 text-sm text-coffee-600 text-center">
                     Discover our {category.name.toLowerCase()} collection
                   </p>
                 </motion.button>
               ))}
             </div>
 
-            <div className="mt-8 text-center">
+            <div className="mt-5 text-center">
               <motion.button
                 onClick={() => goToCategory("all")}
                 className="bg-coffee-800 hover:bg-coffee-900 text-white px-6 py-3 rounded-full font-semibold"

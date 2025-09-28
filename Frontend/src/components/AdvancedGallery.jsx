@@ -354,28 +354,6 @@ const AdvancedGallery = () => {
           </div>
         </div>
 
-        {/* Lottie Animation Showcase */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={
-            isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }
-          }
-          transition={{ duration: 1, delay: 0.3 }}
-          className="flex justify-center mb-12"
-        >
-          <div className="bg-gradient-to-br from-cream-100 to-coffee-100 p-8 rounded-3xl shadow-xl border border-coffee-200">
-            <LottieWrapper
-              animationPath="/animations/coffee-beans.json"
-              width={200}
-              height={200}
-              className="mx-auto"
-            />
-            <p className="text-center text-coffee-700 font-medium mt-4">
-              Our Coffee Journey
-            </p>
-          </div>
-        </motion.div>
-
         {/* Enhanced Gallery Grid */}
         <motion.div
           variants={containerVariants}

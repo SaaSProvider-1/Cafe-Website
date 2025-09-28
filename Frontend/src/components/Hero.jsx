@@ -72,7 +72,7 @@ const Hero = () => {
             transition={{ duration: 1.5, ease: "easeInOut" }}
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
-              backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${slide.image})`,
+              backgroundImage: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url(${slide.image})`,
             }}
           />
         ))}
@@ -91,14 +91,116 @@ const Hero = () => {
       {/* Light floating coffee beans */}
       <FloatingCoffeeBeansAnimation className="absolute inset-0 z-5" />
 
-      {/* Enhanced Coffee Animation */}
-      <div className="absolute top-1/4 right-1/4 opacity-80">
-        <HeroCoffeeAnimation className="w-80 h-96" />
+      {/* Floating Coffee Gallery Images - Positioned at Right Corner */}
+      <div className="absolute top-16 right-8 z-10">
+        {/* Image 1 - Top Right */}
+        <motion.div
+          animate={{
+            y: [0, -15, 0],
+            rotate: [0, 2, -2, 0],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute top-0 right-0 w-32 h-32 rounded-lg overflow-hidden border-4 border-white shadow-2xl transform rotate-12"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop&auto=format"
+            alt="Fresh Coffee Cup"
+            className="w-full h-full object-cover"
+          />
+        </motion.div>
+
+        {/* Image 2 - Middle Right */}
+        <motion.div
+          animate={{
+            y: [0, 20, -10, 0],
+            rotate: [0, -3, 3, 0],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+          className="absolute top-24 right-16 w-28 h-28 rounded-lg overflow-hidden border-4 border-white shadow-2xl transform -rotate-6"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=400&h=400&fit=crop&auto=format"
+            alt="Coffee Beans"
+            className="w-full h-full object-cover"
+          />
+        </motion.div>
+
+        {/* Image 3 - Lower Right */}
+        <motion.div
+          animate={{
+            y: [0, -25, 15, 0],
+            rotate: [0, 4, -2, 0],
+          }}
+          transition={{
+            duration: 7,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2,
+          }}
+          className="absolute top-48 right-4 w-30 h-30 rounded-lg overflow-hidden border-4 border-white shadow-2xl transform rotate-8"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=400&fit=crop&auto=format"
+            alt="Latte Art"
+            className="w-full h-full object-cover"
+          />
+        </motion.div>
+
+        {/* Image 4 - Middle Left */}
+        <motion.div
+          animate={{
+            y: [0, 18, -12, 0],
+            rotate: [0, -5, 3, 0],
+          }}
+          transition={{
+            duration: 9,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 0.5,
+          }}
+          className="absolute top-32 right-40 w-26 h-26 rounded-lg overflow-hidden border-4 border-white shadow-2xl transform -rotate-12"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=400&fit=crop&auto=format"
+            alt="Coffee Shop Interior"
+            className="w-full h-full object-cover"
+          />
+        </motion.div>
+
+        {/* Image 5 - Top Center */}
+        <motion.div
+          animate={{
+            y: [0, -20, 10, 0],
+            rotate: [0, 6, -4, 0],
+          }}
+          transition={{
+            duration: 5,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 3,
+          }}
+          className="absolute top-8 right-28 w-24 h-24 rounded-lg overflow-hidden border-4 border-white shadow-2xl transform rotate-15"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400&h=400&fit=crop&auto=format"
+            alt="Espresso Shot"
+            className="w-full h-full object-cover"
+          />
+        </motion.div>
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 flex items-center justify-center h-full">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+      {/* Content - Positioned at Left Side */}
+      <div className="relative z-10 flex items-center justify-start h-full">
+        <div className="max-w-3xl ml-8 lg:ml-16 text-left px-4 sm:px-6 lg:px-8">
           {slides.map((slide, index) => (
             <motion.div
               key={index}
