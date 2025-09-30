@@ -18,6 +18,7 @@ const orderRoutes = require('./routes/orders');
 const contactRoutes = require('./routes/contact');
 const reviewRoutes = require('./routes/reviews');
 const adminRoutes = require('./routes/admin');
+const newsletterRoutes = require('./routes/newsletter');
 
 // Import admin security middleware
 const { securityHeaders } = require('./middleware/adminAuth');
@@ -55,7 +56,8 @@ const corsOptions = {
   origin: [
     process.env.FRONTEND_URL || 'http://localhost:5173',
     'http://localhost:3000',
-    'http://localhost:5173'
+    'http://localhost:5173',
+    'http://localhost:5174'
   ],
   credentials: true,
   optionsSuccessStatus: 200,
@@ -93,6 +95,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/newsletter', newsletterRoutes);
 
 // Welcome endpoint
 app.get('/', (req, res) => {

@@ -73,6 +73,38 @@ class EmailService {
   }
 
   /**
+   * Send newsletter welcome email
+   */
+  async sendNewsletterWelcomeEmail(subscriberEmail) {
+    const emailContent = this.generateNewsletterWelcomeEmailTemplate(subscriberEmail);
+    
+    const mailOptions = {
+      from: {
+        name: 'Café Elite',
+        address: process.env.SMTP_EMAIL
+      },
+      to: subscriberEmail,
+      subject: '☕ Welcome to Café Elite Newsletter!',
+      html: emailContent.html,
+      text: emailContent.text
+    };
+
+    try {
+      const info = await this.transporter.sendMail(mailOptions);
+      console.log('✅ Newsletter welcome email sent successfully:', info.messageId);
+      return {
+        success: true,
+        messageId: info.messageId,
+        accepted: info.accepted,
+        rejected: info.rejected
+      };
+    } catch (error) {
+      console.error('❌ Failed to send newsletter welcome email:', error);
+      throw new Error(`Email sending failed: ${error.message}`);
+    }
+  }
+
+  /**
    * Send admin account created notification
    */
   async sendAdminCreatedEmail(adminEmail, adminName, loginUrl) {
@@ -100,6 +132,143 @@ class EmailService {
       console.error('❌ Failed to send admin created email:', error);
       throw new Error(`Email sending failed: ${error.message}`);
     }
+  }
+
+  /**
+   * Generate newsletter welcome email template
+   */
+  generateNewsletterWelcomeEmailTemplate(subscriberEmail) {
+    const unsubscribeUrl = `${process.env.FRONTEND_URL}/unsubscribe?email=${encodeURIComponent(subscriberEmail)}`;
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    
+    const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Welcome to Café Elite Newsletter</title>
+      <style>
+        body { font-family: 'Georgia', serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f7f4; }
+        .container { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #8B4513, #D2691E); color: white; padding: 40px 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: bold; }
+        .header p { margin: 10px 0 0 0; font-size: 16px; opacity: 0.9; }
+        .content { padding: 40px 30px; }
+        .welcome-section { text-align: center; margin-bottom: 30px; }
+        .welcome-section h2 { color: #8B4513; margin-bottom: 15px; font-size: 24px; }
+        .perks { background: #fef7f0; border-left: 4px solid #D2691E; padding: 20px; margin: 25px 0; border-radius: 0 8px 8px 0; }
+        .perks h3 { color: #8B4513; margin-top: 0; }
+        .perks ul { margin: 15px 0; padding-left: 20px; }
+        .perks li { margin: 8px 0; color: #5d4037; }
+        .cta-section { text-align: center; margin: 30px 0; }
+        .cta-button { background: linear-gradient(135deg, #8B4513, #D2691E); color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; display: inline-block; font-weight: bold; transition: transform 0.3s; }
+        .social-section { text-align: center; margin: 30px 0; padding: 20px; background: #f8f4f0; border-radius: 10px; }
+        .social-links { margin: 15px 0; }
+        .social-links a { display: inline-block; margin: 0 10px; padding: 10px; background: #8B4513; color: white; border-radius: 50%; text-decoration: none; width: 40px; height: 40px; line-height: 20px; }
+        .footer { background: #2c1810; color: #d7ccc8; padding: 30px; text-align: center; font-size: 14px; }
+        .unsubscribe { margin-top: 20px; }
+        .unsubscribe a { color: #ffab91; text-decoration: none; }
+        .coffee-icon { font-size: 48px; margin: 20px 0; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <div class="coffee-icon">☕</div>
+          <h1>Welcome to Café Elite!</h1>
+          <p>Your journey to extraordinary coffee begins now</p>
+        </div>
+        
+        <div class="content">
+          <div class="welcome-section">
+            <h2>🎉 Thank you for subscribing!</h2>
+            <p>We're thrilled to have you join our coffee-loving community. Get ready to discover amazing blends, brewing tips, and exclusive offers!</p>
+          </div>
+          
+          <div class="perks">
+            <h3>🌟 What you'll receive:</h3>
+            <ul>
+              <li>☕ <strong>New Blend Announcements</strong> - Be the first to try our latest coffee creations</li>
+              <li>💰 <strong>Exclusive Discounts</strong> - Special offers just for subscribers</li>
+              <li>📚 <strong>Brewing Tips & Guides</strong> - Master the art of coffee making</li>
+              <li>🎪 <strong>Event Invitations</strong> - Coffee tastings, workshops, and special events</li>
+              <li>☁️ <strong>Seasonal Specials</strong> - Limited-time flavors and holiday blends</li>
+            </ul>
+          </div>
+          
+          <div class="cta-section">
+            <p>Ready to explore our current menu?</p>
+            <a href="${frontendUrl}/menu" class="cta-button">🍽️ Browse Our Menu</a>
+          </div>
+          
+          <div class="social-section">
+            <h3>☕ Follow Us on Social Media</h3>
+            <p>Stay connected and see what's brewing at Café Elite!</p>
+            <div class="social-links">
+              <a href="#" title="Facebook">📘</a>
+              <a href="#" title="Instagram">📷</a>
+              <a href="#" title="Twitter">🐦</a>
+              <a href="#" title="YouTube">📺</a>
+            </div>
+          </div>
+          
+          <div style="text-align: center; margin: 30px 0; padding: 20px; background: linear-gradient(135deg, #fff3e0, #fce4ec); border-radius: 10px;">
+            <h3 style="color: #8B4513; margin-top: 0;">💡 Pro Tip</h3>
+            <p style="margin-bottom: 0; color: #5d4037;">For the best coffee experience, store your beans in an airtight container away from light and heat. Fresh beans make all the difference!</p>
+          </div>
+        </div>
+        
+        <div class="footer">
+          <p><strong>Café Elite</strong><br>
+          123 Coffee Street, Brew City, BC 12345<br>
+          📞 +1 (555) 123-CAFE | 📧 hello@cafeelite.com</p>
+          
+          <div class="unsubscribe">
+            <p>Don't want to receive these emails anymore?<br>
+            <a href="${unsubscribeUrl}">Unsubscribe here</a></p>
+          </div>
+          
+          <p style="margin-top: 20px; opacity: 0.8;">© 2024 Café Elite. All rights reserved.<br>
+          Made with ❤️ and lots of coffee</p>
+        </div>
+      </div>
+    </body>
+    </html>
+    `;
+
+    const text = `
+    ☕ WELCOME TO CAFÉ ELITE NEWSLETTER!
+    
+    🎉 Thank you for subscribing!
+    
+    We're thrilled to have you join our coffee-loving community. Get ready to discover amazing blends, brewing tips, and exclusive offers!
+    
+    🌟 What you'll receive:
+    ☕ New Blend Announcements - Be the first to try our latest coffee creations
+    💰 Exclusive Discounts - Special offers just for subscribers  
+    📚 Brewing Tips & Guides - Master the art of coffee making
+    🎪 Event Invitations - Coffee tastings, workshops, and special events
+    ☁️ Seasonal Specials - Limited-time flavors and holiday blends
+    
+    Ready to explore our current menu? Visit: ${frontendUrl}/menu
+    
+    💡 Pro Tip: For the best coffee experience, store your beans in an airtight container away from light and heat. Fresh beans make all the difference!
+    
+    Follow us on social media to stay connected!
+    
+    ---
+    Café Elite
+    123 Coffee Street, Brew City, BC 12345
+    📞 +1 (555) 123-CAFE | 📧 hello@cafeelite.com
+    
+    Don't want to receive these emails? Unsubscribe: ${unsubscribeUrl}
+    
+    © 2024 Café Elite. All rights reserved.
+    Made with ❤️ and lots of coffee
+    `;
+
+    return { html, text };
   }
 
   /**

@@ -18,15 +18,43 @@ import {
 const Footer = () => {
   const [email, setEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    if (email) {
-      setIsSubscribed(true);
-      setTimeout(() => {
-        setIsSubscribed(false);
-        setEmail("");
-      }, 3000);
+    if (!email) return;
+
+    setIsLoading(true);
+    setMessage("");
+
+    try {
+      const response = await fetch('http://localhost:5000/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIsSubscribed(true);
+        setMessage(data.data.message);
+        setTimeout(() => {
+          setIsSubscribed(false);
+          setEmail("");
+          setMessage("");
+        }, 5000);
+      } else {
+        setMessage(data.message || "Subscription failed. Please try again.");
+      }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      setMessage("Network error. Please check your connection and try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -300,33 +328,60 @@ const Footer = () => {
                 placeholder="Your email address"
                 className="flex-1 px-6 py-3 rounded-full bg-coffee-800/80 backdrop-blur border border-coffee-700 text-white placeholder-coffee-400 focus:outline-none focus:ring-2 focus:ring-cream-400 focus:border-transparent transition-all duration-300"
                 required
+                disabled={isLoading}
               />
               <motion.button
                 type="submit"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-r from-cream-500 to-cream-600 hover:from-cream-400 hover:to-cream-500 text-coffee-900 px-8 py-3 rounded-full font-bold transition-all duration-300 flex items-center justify-center space-x-2 group"
+                whileHover={{ scale: isLoading ? 1 : 1.05 }}
+                whileTap={{ scale: isLoading ? 1 : 0.95 }}
+                disabled={isLoading}
+                className={`${
+                  isLoading 
+                    ? 'bg-gray-500 cursor-not-allowed' 
+                    : 'bg-gradient-to-r from-cream-500 to-cream-600 hover:from-cream-400 hover:to-cream-500'
+                } text-coffee-900 px-8 py-3 rounded-full font-bold transition-all duration-300 flex items-center justify-center space-x-2 group`}
               >
-                <span>Subscribe</span>
-                <motion.div
-                  animate={{ x: [0, 5, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  <Send size={18} className="group-hover:rotate-12 transition-transform duration-300" />
-                </motion.div>
+                {isLoading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-coffee-900 border-t-transparent rounded-full animate-spin"></div>
+                    <span>Subscribing...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Subscribe</span>
+                    <motion.div
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      <Send size={18} className="group-hover:rotate-12 transition-transform duration-300" />
+                    </motion.div>
+                  </>
+                )}
               </motion.button>
             </form>
             
-            {/* Success Message */}
-            {isSubscribed && (
+            {/* Success/Error Message */}
+            {(isSubscribed || message) && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-4 p-4 bg-green-500/20 border border-green-500/30 rounded-lg backdrop-blur"
+                className={`mt-4 p-4 rounded-lg backdrop-blur ${
+                  isSubscribed 
+                    ? 'bg-green-500/20 border border-green-500/30' 
+                    : 'bg-red-500/20 border border-red-500/30'
+                }`}
               >
                 <div className="flex items-center justify-center space-x-2">
-                  <Star className="text-green-400" size={20} />
-                  <span className="text-green-300">Thanks for subscribing! ☕</span>
+                  {isSubscribed ? (
+                    <>
+                      <Star className="text-green-400" size={20} />
+                      <span className="text-green-300">{message || 'Thanks for subscribing! ☕'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-red-300">{message}</span>
+                    </>
+                  )}
                 </div>
               </motion.div>
             )}

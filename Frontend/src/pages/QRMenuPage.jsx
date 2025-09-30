@@ -16,7 +16,7 @@ import {
   Heart,
   Sparkles,
   Trophy,
-  Home
+  Home,
 } from "lucide-react";
 import { coffeeMenu, categories } from "../data/menuData";
 
@@ -85,9 +85,9 @@ const QRMenuPage = () => {
     e.preventDefault();
 
     if (!orderData.name.trim() || !orderData.phone.trim()) {
-      setOrderSuccess({ 
-        type: 'error', 
-        message: 'Please fill in your name and phone number' 
+      setOrderSuccess({
+        type: "error",
+        message: "Please fill in your name and phone number",
       });
       return;
     }
@@ -122,22 +122,22 @@ const QRMenuPage = () => {
 
         // Show success modal
         setTimeout(() => {
-          setOrderSuccess({ 
-            type: 'success', 
-            data: result.data 
+          setOrderSuccess({
+            type: "success",
+            data: result.data,
           });
         }, 500);
       } else {
-        setOrderSuccess({ 
-          type: 'error', 
-          message: result.message 
+        setOrderSuccess({
+          type: "error",
+          message: result.message,
         });
       }
     } catch (error) {
       console.error("Order submission error:", error);
-      setOrderSuccess({ 
-        type: 'error', 
-        message: 'Failed to place order. Please try again.' 
+      setOrderSuccess({
+        type: "error",
+        message: "Failed to place order. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -156,15 +156,15 @@ const QRMenuPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-cream-50 to-coffee-50">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-lg border-b border-coffee-200/30">
-        <div className="px-4 py-4">
+        <div className="px-3 sm:px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Coffee className="h-8 w-8 text-coffee-600" />
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <Coffee className="h-6 w-6 sm:h-8 sm:w-8 text-coffee-600" />
               <div>
-                <h1 className="font-display text-xl font-bold text-coffee-900">
+                <h1 className="font-display text-lg sm:text-xl font-bold text-coffee-900">
                   Café Elite
                 </h1>
-                <p className="text-sm text-coffee-600">Digital Menu</p>
+                <p className="text-xs sm:text-sm text-coffee-600">Digital Menu</p>
               </div>
             </div>
 
@@ -172,11 +172,11 @@ const QRMenuPage = () => {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsCartOpen(true)}
-              className="relative bg-coffee-600 text-white p-3 rounded-full shadow-lg"
+              className="relative bg-coffee-600 text-white p-2 sm:p-3 rounded-full shadow-lg"
             >
-              <ShoppingCart size={20} />
+              <ShoppingCart size={18} className="sm:w-5 sm:h-5" />
               {getTotalItems() > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center font-bold">
+                <span className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 sm:h-6 sm:w-6 flex items-center justify-center font-bold text-xs">
                   {getTotalItems()}
                 </span>
               )}
@@ -186,30 +186,30 @@ const QRMenuPage = () => {
       </div>
 
       {/* Welcome Message */}
-      <div className="px-4 py-6 bg-coffee-600 text-white">
-        <h2 className="text-2xl font-bold mb-2">
+      <div className="px-3 sm:px-4 py-4 sm:py-6 bg-coffee-600 text-white">
+        <h2 className="text-xl sm:text-2xl font-bold mb-2">
           Welcome to Our Digital Menu!
         </h2>
-        <p className="text-coffee-100">
+        <p className="text-sm sm:text-base text-coffee-100">
           Browse our menu and place your order directly from your phone
         </p>
       </div>
 
       {/* Category Filter */}
-      <div className="px-4 py-4 bg-white border-b">
-        <div className="flex overflow-x-auto space-x-3 pb-2">
+      <div className="px-3 sm:px-4 py-3 sm:py-4 bg-white border-b">
+        <div className="flex overflow-x-auto space-x-2 sm:space-x-3 pb-2 scrollbar-hide">
           {categories.map((category) => (
             <motion.button
               key={category.id}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSelectedCategory(category.id)}
-              className={`flex-shrink-0 flex items-center space-x-2 px-4 py-2 rounded-full font-medium transition-all ${
+              className={`flex-shrink-0 flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2 rounded-full font-medium transition-all text-sm sm:text-base ${
                 selectedCategory === category.id
                   ? "bg-coffee-600 text-white shadow-lg"
                   : "bg-coffee-100 text-coffee-700 hover:bg-coffee-200"
               }`}
             >
-              <span className="text-lg">{category.icon}</span>
+              <span className="text-base sm:text-lg">{category.icon}</span>
               <span className="whitespace-nowrap">{category.name}</span>
             </motion.button>
           ))}
@@ -217,7 +217,7 @@ const QRMenuPage = () => {
       </div>
 
       {/* Menu Items */}
-      <div className="px-4 py-4 space-y-4">
+      <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4">
         {filteredMenu.map((item) => {
           const quantity = getCartItemQuantity(item.id);
 
@@ -230,7 +230,7 @@ const QRMenuPage = () => {
             >
               <div className="flex">
                 {/* Item Image */}
-                <div className="w-24 h-24 flex-shrink-0">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0">
                   <img
                     src={item.image}
                     alt={item.name}
@@ -239,33 +239,33 @@ const QRMenuPage = () => {
                 </div>
 
                 {/* Item Details */}
-                <div className="flex-1 p-4">
+                <div className="flex-1 p-3 sm:p-4">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-semibold text-lg text-coffee-900 line-clamp-1">
+                    <h3 className="font-semibold text-base sm:text-lg text-coffee-900 line-clamp-1 pr-2">
                       {item.name}
                     </h3>
-                    <div className="flex items-center ml-2">
-                      <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                      <span className="text-sm text-coffee-600 ml-1">
+                    <div className="flex items-center ml-1 sm:ml-2 flex-shrink-0">
+                      <Star className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400 fill-current" />
+                      <span className="text-xs sm:text-sm text-coffee-600 ml-1">
                         {item.rating}
                       </span>
                     </div>
                   </div>
 
-                  <p className="text-coffee-600 text-sm mb-3 line-clamp-2">
+                  <p className="text-coffee-600 text-xs sm:text-sm mb-2 sm:mb-3 line-clamp-2">
                     {item.description}
                   </p>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <span className="text-xl font-bold text-coffee-900">
+                  <div className="flex items-end justify-between">
+                    <div className="flex flex-col space-y-1">
+                      <span className="text-lg sm:text-xl font-bold text-coffee-900">
                         ${item.price}
                       </span>
                       <div className="flex items-center space-x-2 text-xs text-coffee-500">
-                        <Clock size={12} />
+                        <Clock size={10} className="sm:w-3 sm:h-3" />
                         <span>{item.prepTime}min</span>
-                        <Flame size={12} className="text-orange-500" />
-                        <span>{item.caffeine}</span>
+                        <Flame size={10} className="text-orange-500 sm:w-3 sm:h-3" />
+                        <span className="hidden sm:inline">{item.caffeine}</span>
                       </div>
                     </div>
 
@@ -274,29 +274,29 @@ const QRMenuPage = () => {
                       <motion.button
                         whileTap={{ scale: 0.95 }}
                         onClick={() => addToCart(item)}
-                        className="bg-coffee-600 text-white px-4 py-2 rounded-full font-medium text-sm flex items-center space-x-1"
+                        className="bg-coffee-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-medium text-xs sm:text-sm flex items-center space-x-1 flex-shrink-0"
                       >
-                        <Plus size={16} />
+                        <Plus size={14} className="sm:w-4 sm:h-4" />
                         <span>Add</span>
                       </motion.button>
                     ) : (
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
                         <motion.button
                           whileTap={{ scale: 0.95 }}
                           onClick={() => removeFromCart(item.id)}
-                          className="bg-coffee-200 text-coffee-700 w-8 h-8 rounded-full flex items-center justify-center"
+                          className="bg-coffee-200 text-coffee-700 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center"
                         >
-                          <Minus size={16} />
+                          <Minus size={14} className="sm:w-4 sm:h-4" />
                         </motion.button>
-                        <span className="font-bold text-coffee-900 w-8 text-center">
+                        <span className="font-bold text-coffee-900 w-6 sm:w-8 text-center text-sm">
                           {quantity}
                         </span>
                         <motion.button
                           whileTap={{ scale: 0.95 }}
                           onClick={() => addToCart(item)}
-                          className="bg-coffee-600 text-white w-8 h-8 rounded-full flex items-center justify-center"
+                          className="bg-coffee-600 text-white w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center"
                         >
-                          <Plus size={16} />
+                          <Plus size={14} className="sm:w-4 sm:h-4" />
                         </motion.button>
                       </div>
                     )}
@@ -309,7 +309,7 @@ const QRMenuPage = () => {
       </div>
 
       {/* Bottom Spacing for Cart */}
-      <div className="h-24"></div>
+      <div className="h-20 sm:h-24"></div>
 
       {/* Cart Modal */}
       <AnimatePresence>
@@ -330,8 +330,8 @@ const QRMenuPage = () => {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Cart Header */}
-              <div className="flex items-center justify-between p-4 border-b">
-                <h3 className="text-xl font-bold text-coffee-900">
+              <div className="flex items-center justify-between p-3 sm:p-4 border-b">
+                <h3 className="text-lg sm:text-xl font-bold text-coffee-900">
                   Your Order
                 </h3>
                 <motion.button
@@ -339,57 +339,57 @@ const QRMenuPage = () => {
                   onClick={() => setIsCartOpen(false)}
                   className="p-2 rounded-full hover:bg-coffee-100"
                 >
-                  <X size={20} />
+                  <X size={18} className="sm:w-5 sm:h-5" />
                 </motion.button>
               </div>
 
               {/* Cart Items */}
-              <div className="flex-1 overflow-y-auto p-4">
+              <div className="flex-1 overflow-y-auto p-3 sm:p-4">
                 {cart.length === 0 ? (
-                  <div className="text-center py-8">
-                    <ShoppingCart className="h-16 w-16 text-coffee-300 mx-auto mb-4" />
-                    <p className="text-coffee-600">Your cart is empty</p>
+                  <div className="text-center py-6 sm:py-8">
+                    <ShoppingCart className="h-12 w-12 sm:h-16 sm:w-16 text-coffee-300 mx-auto mb-3 sm:mb-4" />
+                    <p className="text-coffee-600 text-sm sm:text-base">Your cart is empty</p>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {cart.map((item) => (
                       <div
                         key={item.id}
-                        className="flex items-center space-x-3 bg-coffee-50 rounded-lg p-3"
+                        className="flex items-center space-x-2 sm:space-x-3 bg-coffee-50 rounded-lg p-2 sm:p-3"
                       >
                         <img
                           src={item.image}
                           alt={item.name}
-                          className="w-12 h-12 rounded-lg object-cover"
+                          className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover"
                         />
-                        <div className="flex-1">
-                          <h4 className="font-medium text-coffee-900">
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-coffee-900 text-sm sm:text-base truncate">
                             {item.name}
                           </h4>
-                          <p className="text-sm text-coffee-600">
+                          <p className="text-xs sm:text-sm text-coffee-600">
                             ${item.price} each
                           </p>
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-1 sm:space-x-2">
                           <motion.button
                             whileTap={{ scale: 0.95 }}
                             onClick={() => removeFromCart(item.id)}
-                            className="bg-coffee-200 text-coffee-700 w-8 h-8 rounded-full flex items-center justify-center"
+                            className="bg-coffee-200 text-coffee-700 w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center"
                           >
-                            <Minus size={16} />
+                            <Minus size={12} className="sm:w-4 sm:h-4" />
                           </motion.button>
-                          <span className="font-bold text-coffee-900 w-8 text-center">
+                          <span className="font-bold text-coffee-900 w-5 sm:w-8 text-center text-sm">
                             {item.quantity}
                           </span>
                           <motion.button
                             whileTap={{ scale: 0.95 }}
                             onClick={() => addToCart(item)}
-                            className="bg-coffee-600 text-white w-8 h-8 rounded-full flex items-center justify-center"
+                            className="bg-coffee-600 text-white w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center"
                           >
-                            <Plus size={16} />
+                            <Plus size={12} className="sm:w-4 sm:h-4" />
                           </motion.button>
                         </div>
-                        <span className="font-bold text-coffee-900">
+                        <span className="font-bold text-coffee-900 text-sm sm:text-base">
                           ${(item.price * item.quantity).toFixed(2)}
                         </span>
                       </div>
@@ -400,12 +400,12 @@ const QRMenuPage = () => {
 
               {/* Cart Footer */}
               {cart.length > 0 && (
-                <div className="border-t bg-white p-4 space-y-4">
+                <div className="border-t bg-white p-3 sm:p-4 space-y-3 sm:space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-bold text-coffee-900">
+                    <span className="text-base sm:text-lg font-bold text-coffee-900">
                       Total:
                     </span>
-                    <span className="text-2xl font-bold text-coffee-900">
+                    <span className="text-xl sm:text-2xl font-bold text-coffee-900">
                       ${getTotalPrice().toFixed(2)}
                     </span>
                   </div>
@@ -413,19 +413,19 @@ const QRMenuPage = () => {
                   <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setShowOrderForm(true)}
-                    className="w-full bg-coffee-600 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center space-x-2"
+                    className="w-full bg-coffee-600 text-white py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg flex items-center justify-center space-x-2"
                   >
-                    <Check size={20} />
+                    <Check size={18} className="sm:w-5 sm:h-5" />
                     <span>Place Order ({getTotalItems()} items)</span>
                   </motion.button>
 
                   <div className="text-center space-y-1">
-                    <p className="text-sm text-coffee-600 flex items-center justify-center space-x-1">
-                      <MapPin size={14} />
+                    <p className="text-xs sm:text-sm text-coffee-600 flex items-center justify-center space-x-1">
+                      <MapPin size={12} className="sm:w-3.5 sm:h-3.5" />
                       <span>Pick up at counter</span>
                     </p>
-                    <p className="text-sm text-coffee-600 flex items-center justify-center space-x-1">
-                      <Phone size={14} />
+                    <p className="text-xs sm:text-sm text-coffee-600 flex items-center justify-center space-x-1">
+                      <Phone size={12} className="sm:w-3.5 sm:h-3.5" />
                       <span>Call us at (555) 123-CAFE for questions</span>
                     </p>
                   </div>
@@ -619,17 +619,17 @@ const QRMenuPage = () => {
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               exit={{ scale: 0, rotate: 180 }}
-              transition={{ 
-                type: "spring", 
-                stiffness: 260, 
+              transition={{
+                type: "spring",
+                stiffness: 260,
                 damping: 20,
-                duration: 0.6 
+                duration: 0.6,
               }}
               className="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 text-center relative overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Success State */}
-              {orderSuccess.type === 'success' && (
+              {orderSuccess.type === "success" && (
                 <>
                   {/* Animated Background Elements */}
                   <div className="absolute inset-0 overflow-hidden">
@@ -653,34 +653,54 @@ const QRMenuPage = () => {
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                      transition={{
+                        delay: 0.3,
+                        type: "spring",
+                        stiffness: 200,
+                      }}
                       className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 relative"
                     >
                       <CheckCircle className="w-10 h-10 text-white" />
-                      
+
                       {/* Sparkle animations */}
                       <motion.div
-                        animate={{ 
+                        animate={{
                           rotate: 360,
-                          scale: [1, 1.2, 1]
+                          scale: [1, 1.2, 1],
                         }}
-                        transition={{ 
-                          rotate: { duration: 2, repeat: Infinity, ease: "linear" },
-                          scale: { duration: 1, repeat: Infinity, ease: "easeInOut" }
+                        transition={{
+                          rotate: {
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "linear",
+                          },
+                          scale: {
+                            duration: 1,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                          },
                         }}
                         className="absolute -top-2 -right-2"
                       >
                         <Sparkles className="w-6 h-6 text-yellow-400" />
                       </motion.div>
-                      
+
                       <motion.div
-                        animate={{ 
+                        animate={{
                           rotate: -360,
-                          scale: [1, 1.3, 1]
+                          scale: [1, 1.3, 1],
                         }}
-                        transition={{ 
-                          rotate: { duration: 1.5, repeat: Infinity, ease: "linear" },
-                          scale: { duration: 1.2, repeat: Infinity, ease: "easeInOut" }
+                        transition={{
+                          rotate: {
+                            duration: 1.5,
+                            repeat: Infinity,
+                            ease: "linear",
+                          },
+                          scale: {
+                            duration: 1.2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                          },
                         }}
                         className="absolute -bottom-2 -left-2"
                       >
@@ -711,7 +731,8 @@ const QRMenuPage = () => {
                         <div className="flex items-center justify-center space-x-2 mt-2 text-green-600">
                           <Clock className="w-4 h-4" />
                           <span className="text-sm">
-                            Estimated time: {orderSuccess.data?.estimatedTime} minutes
+                            Estimated time: {orderSuccess.data?.estimatedTime}{" "}
+                            minutes
                           </span>
                         </div>
                       </div>
@@ -719,7 +740,9 @@ const QRMenuPage = () => {
                       <div className="bg-coffee-50 border border-coffee-200 rounded-lg p-3">
                         <div className="flex items-center justify-center space-x-2 text-coffee-700">
                           <MapPin className="w-4 h-4" />
-                          <span className="text-sm font-medium">Pick up at counter</span>
+                          <span className="text-sm font-medium">
+                            Pick up at counter
+                          </span>
                         </div>
                       </div>
                     </motion.div>
@@ -759,7 +782,7 @@ const QRMenuPage = () => {
               )}
 
               {/* Error State */}
-              {orderSuccess.type === 'error' && (
+              {orderSuccess.type === "error" && (
                 <>
                   {/* Animated Background Elements */}
                   <div className="absolute inset-0 overflow-hidden">
@@ -776,7 +799,11 @@ const QRMenuPage = () => {
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                      transition={{
+                        delay: 0.3,
+                        type: "spring",
+                        stiffness: 200,
+                      }}
                       className="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-6"
                     >
                       <X className="w-10 h-10 text-white" />
@@ -798,7 +825,7 @@ const QRMenuPage = () => {
                       transition={{ delay: 0.6 }}
                       className="text-gray-600 mb-6"
                     >
-                      {orderSuccess.message || 'Please try again'}
+                      {orderSuccess.message || "Please try again"}
                     </motion.p>
 
                     {/* Action Buttons */}

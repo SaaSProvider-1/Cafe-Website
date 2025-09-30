@@ -4,6 +4,7 @@ import { useScrollAnimation } from "../hooks/useScrollAnimation";
 import { MapPin, Phone, Mail, Clock, Send, Coffee } from "lucide-react";
 import { LottieExample } from "./LottieWrapper";
 import { StretchableH2, StretchableH3, StretchableH4, StretchableSpan } from "./StretchableText";
+import GoogleMap from "./GoogleMap";
 
 const Contact = () => {
   const [ref, isInView] = useScrollAnimation(0.1);
@@ -13,6 +14,10 @@ const Contact = () => {
     subject: "",
     message: "",
   });
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [isNewsletterLoading, setIsNewsletterLoading] = useState(false);
+  const [newsletterMessage, setNewsletterMessage] = useState("");
+  const [isNewsletterSubscribed, setIsNewsletterSubscribed] = useState(false);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -25,6 +30,43 @@ const Contact = () => {
     e.preventDefault();
     console.log("Form submitted:", formData);
     // Handle form submission
+  };
+
+  const handleNewsletterSubscribe = async (e) => {
+    e.preventDefault();
+    if (!newsletterEmail) return;
+
+    setIsNewsletterLoading(true);
+    setNewsletterMessage("");
+
+    try {
+      const response = await fetch('http://localhost:5000/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: newsletterEmail }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIsNewsletterSubscribed(true);
+        setNewsletterMessage(data.data.message);
+        setTimeout(() => {
+          setIsNewsletterSubscribed(false);
+          setNewsletterEmail("");
+          setNewsletterMessage("");
+        }, 5000);
+      } else {
+        setNewsletterMessage(data.message || "Subscription failed. Please try again.");
+      }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      setNewsletterMessage("Network error. Please check your connection and try again.");
+    } finally {
+      setIsNewsletterLoading(false);
+    }
   };
 
   const containerVariants = {
@@ -168,21 +210,15 @@ const Contact = () => {
               ))}
             </motion.div>
 
-            {/* Map Placeholder */}
-            <motion.div
-              variants={itemVariants}
-              whileHover={{ scale: 1.02 }}
-              className="h-64 bg-coffee-200 rounded-2xl overflow-hidden shadow-lg relative cursor-pointer"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-coffee-500/20 to-coffee-700/20 flex items-center justify-center">
-                <div className="text-center text-coffee-800">
-                  <MapPin size={48} className="mx-auto mb-4" />
-                  <StretchableH3 className="font-display text-xl font-bold mb-2" animationType="wave" intensity="high">
-                    Find Us
-                  </StretchableH3>
-                  <p>Click to view interactive map</p>
-                </div>
-              </div>
+            {/* Google Map */}
+            <motion.div variants={itemVariants}>
+              <GoogleMap 
+                address="123 Coffee Street, Brew City, BC 12345"
+                businessName="Cafe Elite"
+                embedUrl="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.019284393434!2d-122.39866668468141!3d37.79133797975836!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085808c4b2f5c9f%3A0x6e8b6e6e6e6e6e6e!2sBlue%20Bottle%20Coffee!5e0!3m2!1sen!2sus!4v1609876543210!5m2!1sen!2sus"
+                height="h-64"
+                className="shadow-xl"
+              />
             </motion.div>
           </motion.div>
 
@@ -306,6 +342,67 @@ const Contact = () => {
           </motion.div>
         </div>
 
+        {/* Large Interactive Map Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="mt-16"
+        >
+          <div className="text-center mb-8">
+            <StretchableH3 className="font-display text-3xl md:text-4xl font-bold text-coffee-900 mb-4" animationType="wave" intensity="medium">
+              Visit Our Location
+            </StretchableH3>
+            <p className="text-lg text-coffee-700 max-w-2xl mx-auto">
+              Find us in the heart of the city. We're easy to reach by car, public transport, or on foot.
+            </p>
+          </div>
+          
+          <GoogleMap 
+            address="123 Coffee Street, Brew City, BC 12345"
+            businessName="Cafe Elite"
+            embedUrl="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.019284393434!2d-122.39866668468141!3d37.79133797975836!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085808c4b2f5c9f%3A0x6e8b6e6e6e6e6e6e!2sBlue%20Bottle%20Coffee!5e0!3m2!1sen!2sus!4v1609876543210!5m2!1sen!2sus"
+            height="h-96"
+            className="shadow-2xl"
+          />
+          
+          {/* Additional Location Info */}
+          <div className="mt-8 grid md:grid-cols-3 gap-6">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center shadow-lg"
+            >
+              <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <MapPin className="text-white" size={24} />
+              </div>
+              <h4 className="font-semibold text-coffee-900 mb-2">Easy to Find</h4>
+              <p className="text-coffee-600 text-sm">Located in the downtown area with plenty of parking available</p>
+            </motion.div>
+            
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center shadow-lg"
+            >
+              <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Clock className="text-white" size={24} />
+              </div>
+              <h4 className="font-semibold text-coffee-900 mb-2">Convenient Hours</h4>
+              <p className="text-coffee-600 text-sm">Open 7 days a week to serve you the perfect cup of coffee</p>
+            </motion.div>
+            
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="bg-white/80 backdrop-blur-sm rounded-xl p-6 text-center shadow-lg"
+            >
+              <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Coffee className="text-white" size={24} />
+              </div>
+              <h4 className="font-semibold text-coffee-900 mb-2">Great Atmosphere</h4>
+              <p className="text-coffee-600 text-sm">Perfect for work, meetings, or just relaxing with friends</p>
+            </motion.div>
+          </div>
+        </motion.div>
+
         {/* Newsletter Signup */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -323,20 +420,56 @@ const Contact = () => {
                 Get the latest news about new blends, special events, and
                 exclusive offers delivered to your inbox.
               </p>
-              <div className="flex flex-col sm:flex-row max-w-md mx-auto gap-4">
+              <form onSubmit={handleNewsletterSubscribe} className="flex flex-col sm:flex-row max-w-md mx-auto gap-4">
                 <input
                   type="email"
+                  value={newsletterEmail}
+                  onChange={(e) => setNewsletterEmail(e.target.value)}
                   placeholder="Enter your email address"
                   className="flex-1 px-6 py-3 rounded-full text-coffee-900 focus:outline-none focus:ring-2 focus:ring-coffee-400"
+                  required
+                  disabled={isNewsletterLoading}
                 />
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-coffee-500 hover:bg-coffee-400 px-8 py-3 rounded-full font-semibold transition-colors duration-300"
+                  type="submit"
+                  whileHover={{ scale: isNewsletterLoading ? 1 : 1.05 }}
+                  whileTap={{ scale: isNewsletterLoading ? 1 : 0.95 }}
+                  disabled={isNewsletterLoading}
+                  className={`${
+                    isNewsletterLoading 
+                      ? 'bg-gray-500 cursor-not-allowed' 
+                      : 'bg-coffee-500 hover:bg-coffee-400'
+                  } px-8 py-3 rounded-full font-semibold transition-colors duration-300 flex items-center justify-center space-x-2`}
                 >
-                  Subscribe
+                  {isNewsletterLoading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Subscribing...</span>
+                    </>
+                  ) : (
+                    <span>Subscribe</span>
+                  )}
                 </motion.button>
-              </div>
+              </form>
+              
+              {/* Newsletter Message */}
+              {(isNewsletterSubscribed || newsletterMessage) && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`mt-4 p-4 rounded-lg ${
+                    isNewsletterSubscribed 
+                      ? 'bg-green-500/20 border border-green-500/30' 
+                      : 'bg-red-500/20 border border-red-500/30'
+                  }`}
+                >
+                  <div className="flex items-center justify-center space-x-2">
+                    <span className={isNewsletterSubscribed ? 'text-green-300' : 'text-red-300'}>
+                      {newsletterMessage || (isNewsletterSubscribed ? 'Thanks for subscribing! ☕' : '')}
+                    </span>
+                  </div>
+                </motion.div>
+              )}
             </div>
           </div>
         </motion.div>

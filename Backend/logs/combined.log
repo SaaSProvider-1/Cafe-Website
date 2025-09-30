@@ -106,3 +106,104 @@
 {"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 15:48:19"}
 {"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 15:48:20"}
 {"level":"info","message":"🛑 SIGINT received. Shutting down gracefully...","service":"cafe-elite-api","timestamp":"2025-09-30 15:55:16"}
+{"level":"info","message":"🚀 Café Elite API server running on port 5000","service":"cafe-elite-api","timestamp":"2025-09-30 15:55:55"}
+{"level":"info","message":"🌍 Environment: development","service":"cafe-elite-api","timestamp":"2025-09-30 15:55:55"}
+{"level":"info","message":"📡 API Base URL: http://localhost:5000/api","service":"cafe-elite-api","timestamp":"2025-09-30 15:55:55"}
+{"level":"info","message":"🔗 Mongoose connected to MongoDB","service":"cafe-elite-api","timestamp":"2025-09-30 15:55:55"}
+{"level":"info","message":"✅ MongoDB connected successfully","service":"cafe-elite-api","timestamp":"2025-09-30 15:55:55"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:04:32"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:04:32"}
+{"level":"info","message":"POST /api/orders - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:04:47"}
+{"level":"info","message":"New order created: CE20250930004 for Subhankar Dash","service":"cafe-elite-api","timestamp":"2025-09-30 16:04:47"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:05:36"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:05:36"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:05:36"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:05:36"}
+{"level":"info","message":"🚀 Café Elite API server running on port 5000","service":"cafe-elite-api","timestamp":"2025-09-30 16:07:40"}
+{"level":"info","message":"🌍 Environment: development","service":"cafe-elite-api","timestamp":"2025-09-30 16:07:40"}
+{"level":"info","message":"📡 API Base URL: http://localhost:5000/api","service":"cafe-elite-api","timestamp":"2025-09-30 16:07:40"}
+{"level":"info","message":"🔗 Mongoose connected to MongoDB","service":"cafe-elite-api","timestamp":"2025-09-30 16:07:41"}
+{"level":"info","message":"✅ MongoDB connected successfully","service":"cafe-elite-api","timestamp":"2025-09-30 16:07:41"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:14:58"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:14:58"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:14:58"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:14:59"}
+{"level":"info","message":"🚀 Café Elite API server running on port 5000","service":"cafe-elite-api","timestamp":"2025-09-30 16:15:25"}
+{"level":"info","message":"🌍 Environment: development","service":"cafe-elite-api","timestamp":"2025-09-30 16:15:25"}
+{"level":"info","message":"📡 API Base URL: http://localhost:5000/api","service":"cafe-elite-api","timestamp":"2025-09-30 16:15:25"}
+{"level":"info","message":"🔗 Mongoose connected to MongoDB","service":"cafe-elite-api","timestamp":"2025-09-30 16:15:26"}
+{"level":"info","message":"✅ MongoDB connected successfully","service":"cafe-elite-api","timestamp":"2025-09-30 16:15:26"}
+{"level":"info","message":"🚀 Café Elite API server running on port 5000","service":"cafe-elite-api","timestamp":"2025-09-30 16:20:15"}
+{"level":"info","message":"🌍 Environment: development","service":"cafe-elite-api","timestamp":"2025-09-30 16:20:15"}
+{"level":"info","message":"📡 API Base URL: http://localhost:5000/api","service":"cafe-elite-api","timestamp":"2025-09-30 16:20:15"}
+{"level":"info","message":"🔗 Mongoose connected to MongoDB","service":"cafe-elite-api","timestamp":"2025-09-30 16:20:16"}
+{"level":"info","message":"✅ MongoDB connected successfully","service":"cafe-elite-api","timestamp":"2025-09-30 16:20:16"}
+{"level":"info","message":"POST /api/admin/login - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:20:21"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:20:22"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:20:22"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:23:53"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:23:53"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:23:54"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:23:54"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:29:02"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:29:47"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:29:47"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:29:51"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:29:51"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:30:50"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:30:50"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:30:50"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:30:50"}
+{"level":"info","message":"GET /api/admin/orders - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:30:54"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:31:11"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:31:11"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:31:12"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:31:12"}
+{"level":"info","message":"GET /api/admin/orders - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:31:24"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:31:36"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:31:36"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:31:36"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:31:36"}
+{"level":"info","message":"GET /api/admin/orders - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:31:39"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:33:15"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:33:15"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:33:15"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:33:15"}
+{"level":"info","message":"GET /api/admin/orders - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:33:33"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:33:46"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:33:49"}
+{"level":"info","message":"GET /api/admin/orders - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:34:01"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:36:03"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:36:05"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:36:05"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:36:05"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:36:06"}
+{"level":"info","message":"GET /api/admin/orders - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:36:08"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:36:37"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:38:15"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:42:37"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:43:10"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:43:26"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:43:43"}
+{"level":"info","message":"POST /api/admin/logout - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:44:00"}
+{"level":"info","message":"POST /api/orders - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:45:31"}
+{"level":"info","message":"New order created: CE20250930005 for Subhankar Dash","service":"cafe-elite-api","timestamp":"2025-09-30 16:45:32"}
+{"level":"info","message":"POST /api/admin/login - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:46:17"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:46:20"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:46:20"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:46:32"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:46:45"}
+{"level":"info","message":"GET /api/admin/orders - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:46:51"}
+{"level":"info","message":"POST /api/admin/logout - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:47:34"}
+{"level":"info","message":"POST /api/admin/validate-license - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:50:07"}
+{"level":"info","message":"POST /api/admin/login - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:51:15"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:51:16"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:51:16"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:52:00"}
+{"level":"info","message":"POST /api/admin/verify - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:52:00"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:52:00"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:52:00"}
+{"level":"info","message":"POST /api/admin/logout - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 16:52:03"}
+{"level":"info","message":"POST /api/orders - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 17:06:26"}
+{"level":"info","message":"New order created: CE20250930006 for lsdjflsd","service":"cafe-elite-api","timestamp":"2025-09-30 17:06:26"}
+{"level":"info","message":"🛑 SIGINT received. Shutting down gracefully...","service":"cafe-elite-api","timestamp":"2025-09-30 17:22:03"}

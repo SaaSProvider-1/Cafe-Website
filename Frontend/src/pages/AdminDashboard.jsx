@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth } from "../utils/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
 import {
   FaUsers,
   FaChartLine,
@@ -33,7 +33,9 @@ const AdminDashboard = () => {
 
   // Fetch orders when orders tab is selected
   useEffect(() => {
-    if (activeTab === 'orders') {
+    console.log("Active tab changed to:", activeTab);
+    if (activeTab === "orders") {
+      console.log("Fetching orders...");
       fetchOrders();
     }
   }, [activeTab]);
@@ -68,6 +70,11 @@ const AdminDashboard = () => {
   const fetchOrders = async () => {
     try {
       setOrdersLoading(true);
+      console.log(
+        "Fetching orders...",
+        localStorage.getItem("adminToken") ? "Token exists" : "No token"
+      );
+
       const response = await fetch("http://localhost:5000/api/admin/orders", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
@@ -75,11 +82,16 @@ const AdminDashboard = () => {
         },
       });
 
+      console.log("Orders response status:", response.status);
+
       if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Orders fetch failed:", errorData);
         throw new Error("Failed to fetch orders");
       }
 
       const response_data = await response.json();
+      console.log("Orders data:", response_data);
       setOrders(response_data.data.orders);
     } catch (err) {
       console.error("Orders fetch error:", err);
@@ -90,14 +102,17 @@ const AdminDashboard = () => {
 
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/orders/${orderId}/status`, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status: newStatus })
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/admin/orders/${orderId}/status`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: newStatus }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to update order status");
@@ -109,7 +124,7 @@ const AdminDashboard = () => {
       fetchDashboardData();
     } catch (err) {
       console.error("Order status update error:", err);
-      alert('Failed to update order status');
+      alert("Failed to update order status");
     }
   };
 
@@ -363,7 +378,10 @@ const AdminDashboard = () => {
                   icon={FaEye}
                   title="View Orders"
                   color="bg-blue-500 hover:bg-blue-600"
-                  onClick={() => setActiveTab("orders")}
+                  onClick={() => {
+                    console.log("Orders button clicked!");
+                    setActiveTab("orders");
+                  }}
                 />
                 <QuickActionButton
                   icon={FaUsers}
@@ -522,44 +540,71 @@ const AdminDashboard = () => {
                             </h4>
                             <span
                               className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                order.status === 'pending'
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : order.status === 'preparing'
-                                  ? 'bg-blue-100 text-blue-800'
-                                  : order.status === 'ready'
-                                  ? 'bg-green-100 text-green-800'
-                                  : order.status === 'completed'
-                                  ? 'bg-gray-100 text-gray-800'
-                                  : 'bg-red-100 text-red-800'
+                                order.status === "pending"
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : order.status === "preparing"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : order.status === "ready"
+                                  ? "bg-green-100 text-green-800"
+                                  : order.status === "completed"
+                                  ? "bg-gray-100 text-gray-800"
+                                  : "bg-red-100 text-red-800"
                               }`}
                             >
-                              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                              {order.status.charAt(0).toUpperCase() +
+                                order.status.slice(1)}
                             </span>
                           </div>
-                          
+
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
                             <div>
-                              <p><strong>Customer:</strong> {order.customerInfo.name}</p>
-                              <p><strong>Phone:</strong> {order.customerInfo.phone}</p>
+                              <p>
+                                <strong>Customer:</strong>{" "}
+                                {order.customerInfo.name}
+                              </p>
+                              <p>
+                                <strong>Phone:</strong>{" "}
+                                {order.customerInfo.phone}
+                              </p>
                               {order.customerInfo.email && (
-                                <p><strong>Email:</strong> {order.customerInfo.email}</p>
+                                <p>
+                                  <strong>Email:</strong>{" "}
+                                  {order.customerInfo.email}
+                                </p>
                               )}
                             </div>
                             <div>
-                              <p><strong>Total:</strong> ${order.totalAmount.toFixed(2)}</p>
-                              <p><strong>Items:</strong> {order.items.length}</p>
-                              <p><strong>Time:</strong> {new Date(order.createdAt).toLocaleString()}</p>
+                              <p>
+                                <strong>Total:</strong> $
+                                {order.totalAmount.toFixed(2)}
+                              </p>
+                              <p>
+                                <strong>Items:</strong> {order.items.length}
+                              </p>
+                              <p>
+                                <strong>Time:</strong>{" "}
+                                {new Date(order.createdAt).toLocaleString()}
+                              </p>
                             </div>
                           </div>
 
                           {/* Order Items */}
                           <div className="mt-4">
-                            <p className="text-sm font-medium text-gray-700 mb-2">Items:</p>
+                            <p className="text-sm font-medium text-gray-700 mb-2">
+                              Items:
+                            </p>
                             <div className="space-y-1">
                               {order.items.map((item, index) => (
-                                <div key={index} className="flex justify-between text-sm text-gray-600">
-                                  <span>{item.name} x{item.quantity}</span>
-                                  <span>${(item.price * item.quantity).toFixed(2)}</span>
+                                <div
+                                  key={index}
+                                  className="flex justify-between text-sm text-gray-600"
+                                >
+                                  <span>
+                                    {item.name} x{item.quantity}
+                                  </span>
+                                  <span>
+                                    ${(item.price * item.quantity).toFixed(2)}
+                                  </span>
                                 </div>
                               ))}
                             </div>
@@ -567,41 +612,54 @@ const AdminDashboard = () => {
 
                           {order.specialInstructions && (
                             <div className="mt-3">
-                              <p className="text-sm font-medium text-gray-700">Special Instructions:</p>
-                              <p className="text-sm text-gray-600">{order.specialInstructions}</p>
+                              <p className="text-sm font-medium text-gray-700">
+                                Special Instructions:
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                {order.specialInstructions}
+                              </p>
                             </div>
                           )}
                         </div>
 
                         {/* Action Buttons */}
                         <div className="flex flex-col space-y-2 lg:ml-6">
-                          {order.status === 'pending' && (
+                          {order.status === "pending" && (
                             <button
-                              onClick={() => updateOrderStatus(order._id, 'preparing')}
+                              onClick={() =>
+                                updateOrderStatus(order._id, "preparing")
+                              }
                               className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors text-sm"
                             >
                               Start Preparing
                             </button>
                           )}
-                          {order.status === 'preparing' && (
+                          {order.status === "preparing" && (
                             <button
-                              onClick={() => updateOrderStatus(order._id, 'ready')}
+                              onClick={() =>
+                                updateOrderStatus(order._id, "ready")
+                              }
                               className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors text-sm"
                             >
                               Mark Ready
                             </button>
                           )}
-                          {order.status === 'ready' && (
+                          {order.status === "ready" && (
                             <button
-                              onClick={() => updateOrderStatus(order._id, 'completed')}
+                              onClick={() =>
+                                updateOrderStatus(order._id, "completed")
+                              }
                               className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors text-sm"
                             >
                               Complete Order
                             </button>
                           )}
-                          {(order.status === 'pending' || order.status === 'preparing') && (
+                          {(order.status === "pending" ||
+                            order.status === "preparing") && (
                             <button
-                              onClick={() => updateOrderStatus(order._id, 'cancelled')}
+                              onClick={() =>
+                                updateOrderStatus(order._id, "cancelled")
+                              }
                               className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm"
                             >
                               Cancel
@@ -615,7 +673,10 @@ const AdminDashboard = () => {
               ) : (
                 <div className="text-center py-12 text-gray-500">
                   <FaClipboardList className="text-4xl mx-auto mb-4" />
-                  <p>No orders yet. Orders will appear here when customers place them.</p>
+                  <p>
+                    No orders yet. Orders will appear here when customers place
+                    them.
+                  </p>
                 </div>
               )}
             </div>

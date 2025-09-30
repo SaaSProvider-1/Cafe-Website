@@ -94,8 +94,8 @@ const Testimonials = () => {
   return (
     <section className="section-padding bg-gradient-to-b from-white to-cream-50 relative overflow-hidden">
       {/* Background Decorations */}
-      <div className="absolute top-20 left-10 w-40 h-40 bg-coffee-200 rounded-full opacity-10"></div>
-      <div className="absolute bottom-20 right-10 w-60 h-60 bg-cream-300 rounded-full opacity-15"></div>
+      <div className="absolute top-10 sm:top-20 left-5 sm:left-10 w-20 h-20 sm:w-40 sm:h-40 bg-coffee-200 rounded-full opacity-10"></div>
+      <div className="absolute bottom-10 sm:bottom-20 right-5 sm:right-10 w-32 h-32 sm:w-60 sm:h-60 bg-cream-300 rounded-full opacity-15"></div>
 
       <div className="max-w-7xl mx-auto">
         {/* Header */}
@@ -104,20 +104,20 @@ const Testimonials = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-8 sm:mb-12"
         >
-          <span className="text-coffee-600 font-semibold text-lg tracking-wider uppercase mb-4 block">
+          <span className="text-coffee-600 font-semibold text-sm sm:text-lg tracking-wider uppercase mb-2 sm:mb-4 block">
             Testimonials
           </span>
           <StretchableH2 
-            className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-coffee-900 mb-6"
+            className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-coffee-900 mb-3 sm:mb-6"
             animationType="stretch"
             intensity="high"
           >
             What Our Customers
             <StretchableSpan className="block gradient-text" animationType="glow" intensity="high">Are Saying</StretchableSpan>
           </StretchableH2>
-          <p className="text-xl text-coffee-700 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-coffee-700 max-w-2xl mx-auto leading-relaxed px-4">
             Don't just take our word for it. Here's what our community has to
             say about their Café Elite experience.
           </p>
@@ -137,17 +137,17 @@ const Testimonials = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -100 }}
               transition={{ duration: 0.5 }}
-              className="max-w-4xl mx-auto"
+              className="max-w-5xl mx-auto px-4"
             >
-              <div className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl relative">
+              <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-xl relative mx-4 sm:mx-0">
                 {/* Quote Icon */}
-                <div className="absolute -top-6 left-8 w-12 h-12 bg-gradient-to-r from-coffee-600 to-coffee-700 rounded-full flex items-center justify-center">
-                  <Quote className="text-white" size={24} />
+                <div className="absolute -top-4 sm:-top-6 left-4 sm:left-8 w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-r from-coffee-600 to-coffee-700 rounded-full flex items-center justify-center">
+                  <Quote className="text-white" size={16} />
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-8 items-center">
+                <div className="flex flex-col md:grid md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 items-center">
                   {/* Customer Image */}
-                  <div className="text-center">
+                  <div className="text-center md:order-1">
                     <motion.div
                       whileHover={{ scale: 1.05 }}
                       className="relative inline-block"
@@ -155,7 +155,7 @@ const Testimonials = () => {
                       <img
                         src={testimonials[currentTestimonial].image}
                         alt={testimonials[currentTestimonial].name}
-                        className="w-32 h-32 rounded-full object-cover shadow-lg mx-auto mb-4"
+                        className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full object-cover shadow-lg mx-auto mb-2 sm:mb-4"
                       />
                       <motion.div
                         animate={{ rotate: 360 }}
@@ -164,19 +164,19 @@ const Testimonials = () => {
                           repeat: Infinity,
                           ease: "linear",
                         }}
-                        className="absolute -inset-2 border-2 border-coffee-300 rounded-full opacity-50"
+                        className="absolute -inset-1 sm:-inset-2 border-2 border-coffee-300 rounded-full opacity-50"
                       />
                     </motion.div>
 
-                    <h3 className="font-display text-xl font-bold text-coffee-900 mb-1">
+                    <h3 className="font-display text-lg sm:text-xl font-bold text-coffee-900 mb-1">
                       {testimonials[currentTestimonial].name}
                     </h3>
-                    <p className="text-coffee-600 font-medium">
+                    <p className="text-coffee-600 font-medium text-sm sm:text-base">
                       {testimonials[currentTestimonial].role}
                     </p>
 
                     {/* Star Rating */}
-                    <div className="flex justify-center space-x-1 mt-3">
+                    <div className="flex justify-center space-x-1 mt-2 sm:mt-3">
                       {[...Array(testimonials[currentTestimonial].rating)].map(
                         (_, i) => (
                           <motion.div
@@ -185,7 +185,7 @@ const Testimonials = () => {
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: i * 0.1 }}
                           >
-                            <Star className="w-5 h-5 text-yellow-400 fill-current" />
+                            <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 fill-current" />
                           </motion.div>
                         )
                       )}
@@ -193,13 +193,13 @@ const Testimonials = () => {
                   </div>
 
                   {/* Testimonial Text */}
-                  <div className="md:col-span-2">
-                    <blockquote className="text-coffee-800 text-lg leading-relaxed mb-4">
+                  <div className="md:col-span-2 md:order-2">
+                    <blockquote className="text-coffee-800 text-sm sm:text-base md:text-lg leading-relaxed mb-3 sm:mb-4 text-center md:text-left">
                       "{testimonials[currentTestimonial].text}"
                     </blockquote>
 
-                    <div className="bg-coffee-50 rounded-xl p-4 border-l-4 border-coffee-400">
-                      <p className="text-coffee-700 font-semibold italic">
+                    <div className="bg-coffee-50 rounded-lg sm:rounded-xl p-3 sm:p-4 border-l-4 border-coffee-400">
+                      <p className="text-coffee-700 font-semibold italic text-xs sm:text-sm md:text-base">
                         "{testimonials[currentTestimonial].highlight}"
                       </p>
                     </div>
@@ -210,27 +210,27 @@ const Testimonials = () => {
           </AnimatePresence>
 
           {/* Navigation Arrows */}
-          <div className="flex justify-center items-center space-x-4 mt-8">
+          <div className="flex justify-center items-center space-x-3 sm:space-x-4 mt-6 sm:mt-8 px-4">
             <motion.button
               whileHover={{ scale: 1.1, x: -2 }}
               whileTap={{ scale: 0.9 }}
               onClick={prevTestimonial}
-              className="w-12 h-12 bg-coffee-600 hover:bg-coffee-700 text-white rounded-full flex items-center justify-center transition-colors duration-300 shadow-lg"
+              className="w-10 h-10 sm:w-12 sm:h-12 bg-coffee-600 hover:bg-coffee-700 text-white rounded-full flex items-center justify-center transition-colors duration-300 shadow-lg"
             >
-              <ChevronLeft size={24} />
+              <ChevronLeft size={18} className="sm:w-6 sm:h-6" />
             </motion.button>
 
             {/* Indicators */}
-            <div className="flex space-x-2">
+            <div className="flex space-x-1 sm:space-x-2">
               {testimonials.map((_, index) => (
                 <motion.button
                   key={index}
                   whileHover={{ scale: 1.2 }}
                   onClick={() => setCurrentTestimonial(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  className={`h-2 sm:h-3 rounded-full transition-all duration-300 ${
                     index === currentTestimonial
-                      ? "bg-coffee-600 w-8"
-                      : "bg-coffee-300 hover:bg-coffee-400"
+                      ? "bg-coffee-600 w-6 sm:w-8"
+                      : "bg-coffee-300 hover:bg-coffee-400 w-2 sm:w-3"
                   }`}
                 />
               ))}
@@ -240,9 +240,9 @@ const Testimonials = () => {
               whileHover={{ scale: 1.1, x: 2 }}
               whileTap={{ scale: 0.9 }}
               onClick={nextTestimonial}
-              className="w-12 h-12 bg-coffee-600 hover:bg-coffee-700 text-white rounded-full flex items-center justify-center transition-colors duration-300 shadow-lg"
+              className="w-10 h-10 sm:w-12 sm:h-12 bg-coffee-600 hover:bg-coffee-700 text-white rounded-full flex items-center justify-center transition-colors duration-300 shadow-lg"
             >
-              <ChevronRight size={24} />
+              <ChevronRight size={18} className="sm:w-6 sm:h-6" />
             </motion.button>
           </div>
         </motion.div>
@@ -252,7 +252,7 @@ const Testimonials = () => {
           variants={itemVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20"
+          className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8 mt-12 sm:mt-16 md:mt-20 px-4"
         >
           {[
             { number: "1000+", label: "Happy Customers", icon: "😊" },
@@ -263,13 +263,13 @@ const Testimonials = () => {
             <motion.div
               key={index}
               whileHover={{ scale: 1.05, y: -5 }}
-              className="text-center p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+              className="text-center p-3 sm:p-4 md:p-6 bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              <div className="text-4xl mb-3">{stat.icon}</div>
-              <div className="font-display text-3xl font-bold text-coffee-900 mb-2">
+              <div className="text-2xl sm:text-3xl md:text-4xl mb-1 sm:mb-2 md:mb-3">{stat.icon}</div>
+              <div className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-coffee-900 mb-1 sm:mb-2">
                 {stat.number}
               </div>
-              <div className="text-coffee-600 font-medium">{stat.label}</div>
+              <div className="text-coffee-600 font-medium text-xs sm:text-sm md:text-base">{stat.label}</div>
             </motion.div>
           ))}
         </motion.div>
@@ -279,23 +279,23 @@ const Testimonials = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="text-center mt-16"
+          className="text-center mt-12 sm:mt-16 px-4"
         >
           <StretchableH3 
-            className="font-display text-2xl md:text-3xl font-bold text-coffee-900 mb-4"
+            className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-coffee-900 mb-3 sm:mb-4"
             animationType="bounce"
             intensity="medium"
           >
             Ready to Join Our Community?
           </StretchableH3>
-          <p className="text-coffee-700 text-lg mb-8 max-w-2xl mx-auto">
+          <p className="text-coffee-700 text-sm sm:text-base md:text-lg mb-6 sm:mb-8 max-w-xl mx-auto">
             Experience the difference that quality, care, and community can
             make. Your perfect cup is waiting for you.
           </p>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="btn-primary text-lg px-12 py-4"
+            className="btn-primary text-base sm:text-lg px-8 sm:px-12 py-3 sm:py-4"
           >
             Visit Us Today
           </motion.button>
