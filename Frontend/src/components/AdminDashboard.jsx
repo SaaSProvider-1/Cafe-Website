@@ -162,8 +162,12 @@ const AdminDashboard = () => {
             <div className="flex items-center">
               <Coffee className="h-6 w-6 sm:h-8 sm:w-8 text-coffee-600 mr-2 sm:mr-3" />
               <div>
-                <h1 className="text-lg sm:text-xl font-bold text-gray-900">Café Elite</h1>
-                <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">Admin Dashboard</p>
+                <h1 className="text-lg sm:text-xl font-bold text-gray-900">
+                  Café Elite
+                </h1>
+                <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">
+                  Admin Dashboard
+                </p>
               </div>
             </div>
 
@@ -225,7 +229,9 @@ const AdminDashboard = () => {
                 <Users className="h-4 w-4 sm:h-6 sm:w-6 text-blue-600" />
               </div>
               <div className="ml-2 sm:ml-4">
-                <p className="text-xs sm:text-sm font-medium text-gray-600">Users</p>
+                <p className="text-xs sm:text-sm font-medium text-gray-600">
+                  Users
+                </p>
                 <p className="text-lg sm:text-2xl font-bold text-gray-900">
                   {dashboardData?.stats?.totalUsers || 0}
                 </p>
@@ -277,7 +283,9 @@ const AdminDashboard = () => {
                 <p className="text-xs sm:text-sm font-medium text-gray-600">
                   Status
                 </p>
-                <p className="text-sm sm:text-lg font-bold text-green-600">Online</p>
+                <p className="text-sm sm:text-lg font-bold text-green-600">
+                  Online
+                </p>
               </div>
             </div>
           </div>
@@ -442,7 +450,9 @@ const AdminDashboard = () => {
             {ordersLoading ? (
               <div className="text-center py-6 sm:py-8">
                 <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-coffee-600 mx-auto mb-4"></div>
-                <p className="text-sm sm:text-base text-gray-600">Loading orders...</p>
+                <p className="text-sm sm:text-base text-gray-600">
+                  Loading orders...
+                </p>
               </div>
             ) : ordersError ? (
               <div className="text-center py-8">

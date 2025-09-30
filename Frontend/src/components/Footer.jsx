@@ -29,13 +29,16 @@ const Footer = () => {
     setMessage("");
 
     try {
-      const response = await fetch('http://localhost:5000/api/newsletter/subscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/newsletter/subscribe",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
 
       const data = await response.json();
 
@@ -51,7 +54,7 @@ const Footer = () => {
         setMessage(data.message || "Subscription failed. Please try again.");
       }
     } catch (error) {
-      console.error('Newsletter subscription error:', error);
+      console.error("Newsletter subscription error:", error);
       setMessage("Network error. Please check your connection and try again.");
     } finally {
       setIsLoading(false);
@@ -123,14 +126,14 @@ const Footer = () => {
             duration: 20,
             repeat: Infinity,
             repeatType: "reverse",
-            ease: "linear"
+            ease: "linear",
           }}
           style={{
             backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
             backgroundSize: "20px 20px",
           }}
         />
-        
+
         {/* Animated Coffee Bean Particles */}
         {[...Array(15)].map((_, i) => (
           <motion.div
@@ -146,7 +149,7 @@ const Footer = () => {
               duration: 8 + i * 2,
               repeat: Infinity,
               delay: i * 1.5,
-              ease: "easeInOut"
+              ease: "easeInOut",
             }}
             style={{
               left: `${Math.random() * 100}%`,
@@ -167,7 +170,7 @@ const Footer = () => {
           transition={{
             duration: 4,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: "easeInOut",
           }}
         />
         <motion.div
@@ -180,7 +183,7 @@ const Footer = () => {
             duration: 6,
             repeat: Infinity,
             ease: "easeInOut",
-            delay: 1
+            delay: 1,
           }}
         />
       </div>
@@ -299,7 +302,7 @@ const Footer = () => {
         >
           {/* Newsletter Background Glow */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cream-400/5 to-transparent rounded-lg" />
-          
+
           <div className="text-center max-w-2xl mx-auto relative z-10">
             <motion.div
               animate={{ rotate: [0, 5, -5, 0] }}
@@ -310,7 +313,7 @@ const Footer = () => {
                 <Mail className="text-coffee-900" size={24} />
               </div>
             </motion.div>
-            
+
             <h4 className="font-display text-2xl font-bold text-white mb-4">
               Stay Updated with Our Latest Blends
             </h4>
@@ -318,8 +321,11 @@ const Footer = () => {
               Get exclusive access to new products, special offers, and coffee
               brewing tips.
             </p>
-            
-            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row max-w-md mx-auto gap-4">
+
+            <form
+              onSubmit={handleSubscribe}
+              className="flex flex-col sm:flex-row max-w-md mx-auto gap-4"
+            >
               <motion.input
                 whileFocus={{ scale: 1.02 }}
                 type="email"
@@ -336,9 +342,9 @@ const Footer = () => {
                 whileTap={{ scale: isLoading ? 1 : 0.95 }}
                 disabled={isLoading}
                 className={`${
-                  isLoading 
-                    ? 'bg-gray-500 cursor-not-allowed' 
-                    : 'bg-gradient-to-r from-cream-500 to-cream-600 hover:from-cream-400 hover:to-cream-500'
+                  isLoading
+                    ? "bg-gray-500 cursor-not-allowed"
+                    : "bg-gradient-to-r from-cream-500 to-cream-600 hover:from-cream-400 hover:to-cream-500"
                 } text-coffee-900 px-8 py-3 rounded-full font-bold transition-all duration-300 flex items-center justify-center space-x-2 group`}
               >
                 {isLoading ? (
@@ -353,29 +359,34 @@ const Footer = () => {
                       animate={{ x: [0, 5, 0] }}
                       transition={{ duration: 1.5, repeat: Infinity }}
                     >
-                      <Send size={18} className="group-hover:rotate-12 transition-transform duration-300" />
+                      <Send
+                        size={18}
+                        className="group-hover:rotate-12 transition-transform duration-300"
+                      />
                     </motion.div>
                   </>
                 )}
               </motion.button>
             </form>
-            
+
             {/* Success/Error Message */}
             {(isSubscribed || message) && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={`mt-4 p-4 rounded-lg backdrop-blur ${
-                  isSubscribed 
-                    ? 'bg-green-500/20 border border-green-500/30' 
-                    : 'bg-red-500/20 border border-red-500/30'
+                  isSubscribed
+                    ? "bg-green-500/20 border border-green-500/30"
+                    : "bg-red-500/20 border border-red-500/30"
                 }`}
               >
                 <div className="flex items-center justify-center space-x-2">
                   {isSubscribed ? (
                     <>
                       <Star className="text-green-400" size={20} />
-                      <span className="text-green-300">{message || 'Thanks for subscribing! ☕'}</span>
+                      <span className="text-green-300">
+                        {message || "Thanks for subscribing! ☕"}
+                      </span>
                     </>
                   ) : (
                     <>
@@ -427,7 +438,10 @@ const Footer = () => {
           animate={{ y: [-2, 2, -2] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
-          <ArrowUp size={20} className="group-hover:-translate-y-1 transition-transform duration-300" />
+          <ArrowUp
+            size={20}
+            className="group-hover:-translate-y-1 transition-transform duration-300"
+          />
         </motion.div>
       </motion.button>
 
@@ -469,7 +483,7 @@ const Footer = () => {
             duration: 3 + Math.random() * 2,
             repeat: Infinity,
             delay: Math.random() * 3,
-            ease: "easeInOut"
+            ease: "easeInOut",
           }}
           style={{
             top: `${Math.random() * 80}%`,

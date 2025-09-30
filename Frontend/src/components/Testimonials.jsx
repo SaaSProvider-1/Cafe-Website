@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useScrollAnimation } from "../hooks/useScrollAnimation";
 import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
-import { StretchableH2, StretchableH3, StretchableSpan } from "./StretchableText";
+import {
+  StretchableH2,
+  StretchableH3,
+  StretchableSpan,
+} from "./StretchableText";
 
 const Testimonials = () => {
   const [ref, isInView] = useScrollAnimation(0.1);
@@ -109,13 +113,19 @@ const Testimonials = () => {
           <span className="text-coffee-600 font-semibold text-sm sm:text-lg tracking-wider uppercase mb-2 sm:mb-4 block">
             Testimonials
           </span>
-          <StretchableH2 
+          <StretchableH2
             className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-coffee-900 mb-3 sm:mb-6"
             animationType="stretch"
             intensity="high"
           >
             What Our Customers
-            <StretchableSpan className="block gradient-text" animationType="glow" intensity="high">Are Saying</StretchableSpan>
+            <StretchableSpan
+              className="block gradient-text"
+              animationType="glow"
+              intensity="high"
+            >
+              Are Saying
+            </StretchableSpan>
           </StretchableH2>
           <p className="text-base sm:text-lg md:text-xl text-coffee-700 max-w-2xl mx-auto leading-relaxed px-4">
             Don't just take our word for it. Here's what our community has to
@@ -265,11 +275,15 @@ const Testimonials = () => {
               whileHover={{ scale: 1.05, y: -5 }}
               className="text-center p-3 sm:p-4 md:p-6 bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              <div className="text-2xl sm:text-3xl md:text-4xl mb-1 sm:mb-2 md:mb-3">{stat.icon}</div>
+              <div className="text-2xl sm:text-3xl md:text-4xl mb-1 sm:mb-2 md:mb-3">
+                {stat.icon}
+              </div>
               <div className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-coffee-900 mb-1 sm:mb-2">
                 {stat.number}
               </div>
-              <div className="text-coffee-600 font-medium text-xs sm:text-sm md:text-base">{stat.label}</div>
+              <div className="text-coffee-600 font-medium text-xs sm:text-sm md:text-base">
+                {stat.label}
+              </div>
             </motion.div>
           ))}
         </motion.div>
@@ -281,7 +295,7 @@ const Testimonials = () => {
           transition={{ duration: 0.8, delay: 0.8 }}
           className="text-center mt-12 sm:mt-16 px-4"
         >
-          <StretchableH3 
+          <StretchableH3
             className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-coffee-900 mb-3 sm:mb-4"
             animationType="bounce"
             intensity="medium"

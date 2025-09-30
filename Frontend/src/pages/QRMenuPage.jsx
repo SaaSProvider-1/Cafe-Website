@@ -164,7 +164,9 @@ const QRMenuPage = () => {
                 <h1 className="font-display text-lg sm:text-xl font-bold text-coffee-900">
                   Café Elite
                 </h1>
-                <p className="text-xs sm:text-sm text-coffee-600">Digital Menu</p>
+                <p className="text-xs sm:text-sm text-coffee-600">
+                  Digital Menu
+                </p>
               </div>
             </div>
 
@@ -264,8 +266,13 @@ const QRMenuPage = () => {
                       <div className="flex items-center space-x-2 text-xs text-coffee-500">
                         <Clock size={10} className="sm:w-3 sm:h-3" />
                         <span>{item.prepTime}min</span>
-                        <Flame size={10} className="text-orange-500 sm:w-3 sm:h-3" />
-                        <span className="hidden sm:inline">{item.caffeine}</span>
+                        <Flame
+                          size={10}
+                          className="text-orange-500 sm:w-3 sm:h-3"
+                        />
+                        <span className="hidden sm:inline">
+                          {item.caffeine}
+                        </span>
                       </div>
                     </div>
 
@@ -348,7 +355,9 @@ const QRMenuPage = () => {
                 {cart.length === 0 ? (
                   <div className="text-center py-6 sm:py-8">
                     <ShoppingCart className="h-12 w-12 sm:h-16 sm:w-16 text-coffee-300 mx-auto mb-3 sm:mb-4" />
-                    <p className="text-coffee-600 text-sm sm:text-base">Your cart is empty</p>
+                    <p className="text-coffee-600 text-sm sm:text-base">
+                      Your cart is empty
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-3 sm:space-y-4">

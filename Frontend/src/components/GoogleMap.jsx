@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin, ExternalLink, Navigation } from "lucide-react";
 
-const GoogleMap = ({ 
+const GoogleMap = ({
   address = "123 Coffee Street, Brew City, BC 12345",
   businessName = "Cafe Elite",
   embedUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.019284393434!2d-122.39866668468141!3d37.79133797975836!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085808c4b2f5c9f%3A0x6e8b6e6e6e6e6e6e!2sBlue%20Bottle%20Coffee!5e0!3m2!1sen!2sus!4v1609876543210!5m2!1sen!2sus",
   height = "h-64",
-  className = ""
+  className = "",
 }) => {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -47,14 +47,16 @@ const GoogleMap = ({
         title={`${businessName} Location - ${address}`}
         onLoad={handleIframeLoad}
       ></iframe>
-      
+
       {/* Business Info Overlay */}
       <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
         <div className="flex items-center space-x-2">
           <MapPin size={16} className="text-coffee-600" />
           <div>
-            <p className="text-sm font-semibold text-coffee-900">{businessName}</p>
-            <p className="text-xs text-coffee-600">{address.split(',')[0]}</p>
+            <p className="text-sm font-semibold text-coffee-900">
+              {businessName}
+            </p>
+            <p className="text-xs text-coffee-600">{address.split(",")[0]}</p>
           </div>
         </div>
       </div>
