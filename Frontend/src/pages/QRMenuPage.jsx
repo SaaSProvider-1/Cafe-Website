@@ -12,6 +12,11 @@ import {
   Check,
   MapPin,
   Phone,
+  CheckCircle,
+  Heart,
+  Sparkles,
+  Trophy,
+  Home
 } from "lucide-react";
 import { coffeeMenu, categories } from "../data/menuData";
 
@@ -20,6 +25,15 @@ const QRMenuPage = () => {
   const [cart, setCart] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [showOrderForm, setShowOrderForm] = useState(false);
+  const [orderData, setOrderData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    specialInstructions: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(null);
 
   const filteredMenu =
     selectedCategory === "all"
@@ -65,6 +79,77 @@ const QRMenuPage = () => {
   const getCartItemQuantity = (itemId) => {
     const cartItem = cart.find((item) => item.id === itemId);
     return cartItem ? cartItem.quantity : 0;
+  };
+
+  const handleOrderSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!orderData.name.trim() || !orderData.phone.trim()) {
+      setOrderSuccess({ 
+        type: 'error', 
+        message: 'Please fill in your name and phone number' 
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customerInfo: {
+            name: orderData.name,
+            phone: orderData.phone,
+            email: orderData.email || undefined,
+          },
+          items: cart,
+          specialInstructions: orderData.specialInstructions || undefined,
+          orderType: "pickup",
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setOrderSuccess(result.data);
+        setCart([]);
+        setShowOrderForm(false);
+        setIsCartOpen(false);
+
+        // Show success modal
+        setTimeout(() => {
+          setOrderSuccess({ 
+            type: 'success', 
+            data: result.data 
+          });
+        }, 500);
+      } else {
+        setOrderSuccess({ 
+          type: 'error', 
+          message: result.message 
+        });
+      }
+    } catch (error) {
+      console.error("Order submission error:", error);
+      setOrderSuccess({ 
+        type: 'error', 
+        message: 'Failed to place order. Please try again.' 
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setOrderData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   return (
@@ -327,6 +412,7 @@ const QRMenuPage = () => {
 
                   <motion.button
                     whileTap={{ scale: 0.95 }}
+                    onClick={() => setShowOrderForm(true)}
                     className="w-full bg-coffee-600 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center space-x-2"
                   >
                     <Check size={20} />
@@ -344,6 +430,404 @@ const QRMenuPage = () => {
                     </p>
                   </div>
                 </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Order Form Modal */}
+      <AnimatePresence>
+        {showOrderForm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/50"
+            onClick={() => !isSubmitting && setShowOrderForm(false)}
+          >
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl flex flex-col"
+              style={{ maxHeight: "90vh" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Form Header */}
+              <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
+                <h3 className="text-xl font-bold text-coffee-900">
+                  Complete Your Order
+                </h3>
+                {!isSubmitting && (
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setShowOrderForm(false)}
+                    className="p-2 rounded-full hover:bg-coffee-100"
+                  >
+                    <X size={20} />
+                  </motion.button>
+                )}
+              </div>
+
+              {/* Order Summary */}
+              <div className="p-4 bg-coffee-50 border-b flex-shrink-0">
+                <h4 className="font-semibold text-coffee-900 mb-2">
+                  Order Summary
+                </h4>
+                <div className="space-y-2">
+                  {cart.map((item) => (
+                    <div key={item.id} className="flex justify-between text-sm">
+                      <span>
+                        {item.name} x{item.quantity}
+                      </span>
+                      <span>${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                  ))}
+                  <div className="border-t pt-2 flex justify-between font-bold">
+                    <span>Total:</span>
+                    <span>${getTotalPrice().toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Scrollable Form Content */}
+              <div className="flex-1 overflow-y-auto">
+                <div className="p-4">
+                  <form onSubmit={handleOrderSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-coffee-900 mb-1">
+                        Name *
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={orderData.name}
+                        onChange={handleInputChange}
+                        disabled={isSubmitting}
+                        required
+                        className="w-full px-3 py-2 border border-coffee-300 rounded-lg focus:ring-2 focus:ring-coffee-500 focus:border-transparent"
+                        placeholder="Your full name"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-coffee-900 mb-1">
+                        Phone Number *
+                      </label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={orderData.phone}
+                        onChange={handleInputChange}
+                        disabled={isSubmitting}
+                        required
+                        className="w-full px-3 py-2 border border-coffee-300 rounded-lg focus:ring-2 focus:ring-coffee-500 focus:border-transparent"
+                        placeholder="(555) 123-4567"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-coffee-900 mb-1">
+                        Email (Optional)
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={orderData.email}
+                        onChange={handleInputChange}
+                        disabled={isSubmitting}
+                        className="w-full px-3 py-2 border border-coffee-300 rounded-lg focus:ring-2 focus:ring-coffee-500 focus:border-transparent"
+                        placeholder="your@email.com"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-coffee-900 mb-1">
+                        Special Instructions (Optional)
+                      </label>
+                      <textarea
+                        name="specialInstructions"
+                        value={orderData.specialInstructions}
+                        onChange={handleInputChange}
+                        disabled={isSubmitting}
+                        rows={3}
+                        className="w-full px-3 py-2 border border-coffee-300 rounded-lg focus:ring-2 focus:ring-coffee-500 focus:border-transparent resize-none"
+                        placeholder="Any special requests or dietary restrictions..."
+                      />
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              {/* Fixed Footer with Submit Button */}
+              <div className="border-t bg-white p-4 flex-shrink-0">
+                <div className="space-y-3">
+                  <motion.button
+                    type="submit"
+                    onClick={handleOrderSubmit}
+                    disabled={isSubmitting}
+                    whileTap={{ scale: isSubmitting ? 1 : 0.95 }}
+                    className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center space-x-2 ${
+                      isSubmitting
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-coffee-600 hover:bg-coffee-700"
+                    } text-white`}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>Placing Order...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Check size={20} />
+                        <span>
+                          Confirm Order - ${getTotalPrice().toFixed(2)}
+                        </span>
+                      </>
+                    )}
+                  </motion.button>
+
+                  <div className="text-center space-y-1">
+                    <p className="text-sm text-coffee-600 flex items-center justify-center space-x-1">
+                      <MapPin size={14} />
+                      <span>Pick up at counter</span>
+                    </p>
+                    <p className="text-sm text-coffee-600 flex items-center justify-center space-x-1">
+                      <Clock size={14} />
+                      <span>Estimated time: 15-20 minutes</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Success/Error Modal */}
+      <AnimatePresence>
+        {orderSuccess && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+            onClick={() => setOrderSuccess(null)}
+          >
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              exit={{ scale: 0, rotate: 180 }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 260, 
+                damping: 20,
+                duration: 0.6 
+              }}
+              className="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 text-center relative overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Success State */}
+              {orderSuccess.type === 'success' && (
+                <>
+                  {/* Animated Background Elements */}
+                  <div className="absolute inset-0 overflow-hidden">
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 0.1 }}
+                      transition={{ delay: 0.2, duration: 1 }}
+                      className="absolute -top-10 -right-10 w-40 h-40 bg-green-500 rounded-full"
+                    />
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 0.1 }}
+                      transition={{ delay: 0.4, duration: 1 }}
+                      className="absolute -bottom-10 -left-10 w-32 h-32 bg-coffee-500 rounded-full"
+                    />
+                  </div>
+
+                  {/* Floating Success Elements */}
+                  <div className="relative">
+                    {/* Success Icon with Animation */}
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                      className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 relative"
+                    >
+                      <CheckCircle className="w-10 h-10 text-white" />
+                      
+                      {/* Sparkle animations */}
+                      <motion.div
+                        animate={{ 
+                          rotate: 360,
+                          scale: [1, 1.2, 1]
+                        }}
+                        transition={{ 
+                          rotate: { duration: 2, repeat: Infinity, ease: "linear" },
+                          scale: { duration: 1, repeat: Infinity, ease: "easeInOut" }
+                        }}
+                        className="absolute -top-2 -right-2"
+                      >
+                        <Sparkles className="w-6 h-6 text-yellow-400" />
+                      </motion.div>
+                      
+                      <motion.div
+                        animate={{ 
+                          rotate: -360,
+                          scale: [1, 1.3, 1]
+                        }}
+                        transition={{ 
+                          rotate: { duration: 1.5, repeat: Infinity, ease: "linear" },
+                          scale: { duration: 1.2, repeat: Infinity, ease: "easeInOut" }
+                        }}
+                        className="absolute -bottom-2 -left-2"
+                      >
+                        <Heart className="w-5 h-5 text-pink-400" />
+                      </motion.div>
+                    </motion.div>
+
+                    {/* Success Message */}
+                    <motion.h3
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 }}
+                      className="text-2xl font-bold text-gray-900 mb-2"
+                    >
+                      Order Placed Successfully! 🎉
+                    </motion.h3>
+
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6 }}
+                      className="space-y-3 mb-6"
+                    >
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <p className="text-lg font-semibold text-green-800">
+                          Order #{orderSuccess.data?.orderNumber}
+                        </p>
+                        <div className="flex items-center justify-center space-x-2 mt-2 text-green-600">
+                          <Clock className="w-4 h-4" />
+                          <span className="text-sm">
+                            Estimated time: {orderSuccess.data?.estimatedTime} minutes
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="bg-coffee-50 border border-coffee-200 rounded-lg p-3">
+                        <div className="flex items-center justify-center space-x-2 text-coffee-700">
+                          <MapPin className="w-4 h-4" />
+                          <span className="text-sm font-medium">Pick up at counter</span>
+                        </div>
+                      </div>
+                    </motion.div>
+
+                    {/* Action Buttons */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.7 }}
+                      className="space-y-3"
+                    >
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => {
+                          setOrderSuccess(null);
+                          // Could add order tracking functionality here
+                        }}
+                        className="w-full bg-green-500 text-white py-3 px-6 rounded-xl font-semibold flex items-center justify-center space-x-2"
+                      >
+                        <Trophy className="w-5 h-5" />
+                        <span>Track Order</span>
+                      </motion.button>
+
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setOrderSuccess(null)}
+                        className="w-full bg-coffee-100 text-coffee-700 py-3 px-6 rounded-xl font-semibold flex items-center justify-center space-x-2"
+                      >
+                        <Home className="w-5 h-5" />
+                        <span>Continue Browsing</span>
+                      </motion.button>
+                    </motion.div>
+                  </div>
+                </>
+              )}
+
+              {/* Error State */}
+              {orderSuccess.type === 'error' && (
+                <>
+                  {/* Animated Background Elements */}
+                  <div className="absolute inset-0 overflow-hidden">
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 0.1 }}
+                      transition={{ delay: 0.2, duration: 1 }}
+                      className="absolute -top-10 -right-10 w-40 h-40 bg-red-500 rounded-full"
+                    />
+                  </div>
+
+                  <div className="relative">
+                    {/* Error Icon */}
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                      className="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-6"
+                    >
+                      <X className="w-10 h-10 text-white" />
+                    </motion.div>
+
+                    {/* Error Message */}
+                    <motion.h3
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 }}
+                      className="text-2xl font-bold text-gray-900 mb-2"
+                    >
+                      Oops! Something went wrong
+                    </motion.h3>
+
+                    <motion.p
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6 }}
+                      className="text-gray-600 mb-6"
+                    >
+                      {orderSuccess.message || 'Please try again'}
+                    </motion.p>
+
+                    {/* Action Buttons */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.7 }}
+                      className="space-y-3"
+                    >
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setOrderSuccess(null)}
+                        className="w-full bg-red-500 text-white py-3 px-6 rounded-xl font-semibold"
+                      >
+                        Try Again
+                      </motion.button>
+
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setOrderSuccess(null)}
+                        className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-xl font-semibold"
+                      >
+                        Close
+                      </motion.button>
+                    </motion.div>
+                  </div>
+                </>
               )}
             </motion.div>
           </motion.div>

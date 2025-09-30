@@ -1,88 +1,47 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Lock,
-  User,
   Eye,
   EyeOff,
   Shield,
   AlertCircle,
   CheckCircle,
+  Key,
+  Mail,
+  ArrowRight,
+  ArrowLeft,
+  UserPlus,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 
 const AdminLogin = () => {
-  const { login, isLoading } = useAuth();
+  const { login, validateLicenseKey, createAdminAccount } = useAuth();
+
+  // Multi-step form state
+  const [currentStep, setCurrentStep] = useState("license"); // 'license', 'login', 'create-account'
+  const [licenseValidated, setLicenseValidated] = useState(false);
+  const [adminExists, setAdminExists] = useState(true);
+
+  // Form data
   const [formData, setFormData] = useState({
-    username: "",
+    licenseKey: "",
+    email: "",
     password: "",
+    firstName: "",
+    lastName: "",
+    confirmPassword: "",
   });
+
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
-  const [loginAttempts, setLoginAttempts] = useState(0);
-  const [isBlocked, setIsBlocked] = useState(false);
-  const [blockTimeLeft, setBlockTimeLeft] = useState(0);
-  const [loginStatus, setLoginStatus] = useState(null);
+  const [status, setStatus] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Security: Block login after 3 failed attempts for 5 minutes
-  const MAX_ATTEMPTS = 3;
-  const BLOCK_DURATION = 5 * 60 * 1000; // 5 minutes
-
-  useEffect(() => {
-    // Check if user is blocked
-    const blockData = localStorage.getItem("adminLoginBlock");
-    if (blockData) {
-      const { timestamp, attempts } = JSON.parse(blockData);
-      const now = Date.now();
-      const timeElapsed = now - timestamp;
-
-      if (attempts >= MAX_ATTEMPTS && timeElapsed < BLOCK_DURATION) {
-        setIsBlocked(true);
-        setBlockTimeLeft(BLOCK_DURATION - timeElapsed);
-        setLoginAttempts(attempts);
-      } else if (timeElapsed >= BLOCK_DURATION) {
-        // Block expired, reset attempts
-        localStorage.removeItem("adminLoginBlock");
-        setLoginAttempts(0);
-      } else {
-        setLoginAttempts(attempts);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isBlocked && blockTimeLeft > 0) {
-      const timer = setInterval(() => {
-        setBlockTimeLeft((prev) => {
-          if (prev <= 1000) {
-            setIsBlocked(false);
-            setLoginAttempts(0);
-            localStorage.removeItem("adminLoginBlock");
-            return 0;
-          }
-          return prev - 1000;
-        });
-      }, 1000);
-
-      return () => clearInterval(timer);
-    }
-  }, [isBlocked, blockTimeLeft]);
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.username.trim()) {
-      newErrors.username = "Username is required";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const clearErrors = () => {
+    setErrors({});
+    setStatus(null);
   };
 
   const handleInputChange = (e) => {
@@ -92,7 +51,7 @@ const AdminLogin = () => {
       [name]: value,
     }));
 
-    // Clear error when user starts typing
+    // Clear specific field error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -101,82 +60,215 @@ const AdminLogin = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const validateLicenseStep = () => {
+    const newErrors = {};
+
+    if (!formData.licenseKey.trim()) {
+      newErrors.licenseKey = "License key is required";
+    } else if (formData.licenseKey.length < 10) {
+      newErrors.licenseKey = "Invalid license key format";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validateLoginStep = () => {
+    const newErrors = {};
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validateCreateAccountStep = () => {
+    const newErrors = {};
+
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "First name is required";
+    }
+
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = "Last name is required";
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleLicenseValidation = async (e) => {
     e.preventDefault();
 
-    if (isBlocked) {
-      setLoginStatus({
-        type: "error",
-        message: `Too many failed attempts. Please wait ${Math.ceil(
-          blockTimeLeft / 60000
-        )} minutes.`,
-      });
-      return;
-    }
+    if (!validateLicenseStep()) return;
 
-    if (!validateForm()) {
-      return;
-    }
-
-    setLoginStatus(null);
+    setIsSubmitting(true);
+    clearErrors();
 
     try {
-      const result = await login(formData);
+      const result = await validateLicenseKey(formData.licenseKey);
 
       if (result.success) {
-        setLoginStatus({
+        setLicenseValidated(true);
+        setAdminExists(false); // No admin exists, can create account
+        setStatus({
           type: "success",
-          message: "Login successful! Redirecting to admin dashboard...",
+          message:
+            "License key validated successfully! You can now create your admin account.",
         });
 
-        // Clear any existing block data
-        localStorage.removeItem("adminLoginBlock");
-
-        // Redirect will be handled by the parent component
+        // Move to create account step since no admin exists
         setTimeout(() => {
-          window.location.href = "/admin/dashboard";
+          setCurrentStep("create-account");
+          clearErrors();
         }, 1500);
       } else {
-        const newAttempts = loginAttempts + 1;
-        setLoginAttempts(newAttempts);
-
-        // Store failed attempt
-        const blockData = {
-          timestamp: Date.now(),
-          attempts: newAttempts,
-        };
-        localStorage.setItem("adminLoginBlock", JSON.stringify(blockData));
-
-        if (newAttempts >= MAX_ATTEMPTS) {
-          setIsBlocked(true);
-          setBlockTimeLeft(BLOCK_DURATION);
-          setLoginStatus({
-            type: "error",
-            message: `Too many failed attempts. Access blocked for ${
-              BLOCK_DURATION / 60000
-            } minutes.`,
+        // Check if admin already exists
+        if (
+          result.error.includes("Admin already exists") ||
+          result.error.includes("ADMIN_EXISTS")
+        ) {
+          setAdminExists(true);
+          setLicenseValidated(true);
+          setCurrentStep("login");
+          setStatus({
+            type: "info",
+            message:
+              "Admin account already exists. Please login with your credentials.",
           });
         } else {
-          setLoginStatus({
+          setStatus({
             type: "error",
-            message: `${result.error} (${
-              MAX_ATTEMPTS - newAttempts
-            } attempts remaining)`,
+            message: result.error,
           });
         }
       }
     } catch (error) {
-      setLoginStatus({
+      setStatus({
         type: "error",
         message: "An unexpected error occurred. Please try again.",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const formatTime = (ms) => {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = Math.floor((ms % 60000) / 1000);
-    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    if (!validateLoginStep()) return;
+
+    setIsSubmitting(true);
+    clearErrors();
+
+    try {
+      const result = await login(formData.email, formData.password);
+
+      if (result.success) {
+        setStatus({
+          type: "success",
+          message: "Login successful! Redirecting to dashboard...",
+        });
+
+        setTimeout(() => {
+          window.location.href = "/admin/dashboard";
+        }, 1500);
+      } else {
+        setStatus({
+          type: "error",
+          message: result.error,
+        });
+      }
+    } catch (error) {
+      setStatus({
+        type: "error",
+        message: "An unexpected error occurred. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCreateAccount = async (e) => {
+    e.preventDefault();
+
+    if (!validateCreateAccountStep()) return;
+
+    setIsSubmitting(true);
+    clearErrors();
+
+    try {
+      const accountData = {
+        licenseKey: formData.licenseKey,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+      };
+
+      const result = await createAdminAccount(accountData);
+
+      if (result.success) {
+        setStatus({
+          type: "success",
+          message:
+            "Admin account created successfully! Redirecting to dashboard...",
+        });
+
+        setTimeout(() => {
+          window.location.href = "/admin/dashboard";
+        }, 1500);
+      } else {
+        setStatus({
+          type: "error",
+          message: result.error,
+        });
+      }
+    } catch (error) {
+      setStatus({
+        type: "error",
+        message: "An unexpected error occurred. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const goBackToLicense = () => {
+    setCurrentStep("license");
+    setLicenseValidated(false);
+    clearErrors();
+  };
+
+  const switchToCreateAccount = () => {
+    setCurrentStep("create-account");
+    clearErrors();
   };
 
   return (
@@ -206,190 +298,462 @@ const AdminLogin = () => {
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="inline-flex items-center justify-center w-16 h-16 bg-coffee-600 rounded-full mb-4"
           >
-            <Shield className="w-8 h-8 text-white" />
+            {currentStep === "license" && (
+              <Key className="w-8 h-8 text-white" />
+            )}
+            {currentStep === "login" && (
+              <Shield className="w-8 h-8 text-white" />
+            )}
+            {currentStep === "create-account" && (
+              <UserPlus className="w-8 h-8 text-white" />
+            )}
           </motion.div>
-          <h1 className="text-3xl font-bold text-white mb-2">Admin Access</h1>
-          <p className="text-coffee-300">Secure login required</p>
+          <h1 className="text-3xl font-bold text-white mb-2">
+            {currentStep === "license" && "License Validation"}
+            {currentStep === "login" && "Admin Login"}
+            {currentStep === "create-account" && "Create Admin Account"}
+          </h1>
+          <p className="text-coffee-300">
+            {currentStep === "license" && "Enter your license key to continue"}
+            {currentStep === "login" && "Login to admin dashboard"}
+            {currentStep === "create-account" && "Setup your admin account"}
+          </p>
         </div>
 
-        {/* Login Form */}
+        {/* Form Container */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20"
         >
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Status Message */}
-            <AnimatePresence>
-              {loginStatus && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className={`p-4 rounded-lg border flex items-center space-x-3 ${
-                    loginStatus.type === "success"
-                      ? "bg-green-500/20 border-green-500/30 text-green-300"
-                      : "bg-red-500/20 border-red-500/30 text-red-300"
-                  }`}
-                >
-                  {loginStatus.type === "success" ? (
-                    <CheckCircle className="w-5 h-5 flex-shrink-0" />
-                  ) : (
-                    <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                  )}
-                  <span className="text-sm">{loginStatus.message}</span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Block Warning */}
-            {isBlocked && (
+          {/* Status Message */}
+          <AnimatePresence>
+            {status && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="p-4 bg-red-500/20 border border-red-500/30 rounded-lg text-center"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className={`p-4 rounded-lg border flex items-center space-x-3 mb-6 ${
+                  status.type === "success"
+                    ? "bg-green-500/20 border-green-500/30 text-green-300"
+                    : status.type === "info"
+                    ? "bg-blue-500/20 border-blue-500/30 text-blue-300"
+                    : "bg-red-500/20 border-red-500/30 text-red-300"
+                }`}
               >
-                <Lock className="w-8 h-8 text-red-400 mx-auto mb-2" />
-                <p className="text-red-300 font-semibold">
-                  Access Temporarily Blocked
-                </p>
-                <p className="text-red-400 text-sm mt-1">
-                  Time remaining: {formatTime(blockTimeLeft)}
-                </p>
+                {status.type === "success" ? (
+                  <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                ) : (
+                  <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                )}
+                <span className="text-sm">{status.message}</span>
               </motion.div>
             )}
+          </AnimatePresence>
 
-            {/* Username Field */}
-            <div>
-              <label
-                htmlFor="username"
-                className="block text-white font-medium mb-2"
-              >
-                Username
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-coffee-400" />
+          {/* License Validation Step */}
+          {currentStep === "license" && (
+            <form onSubmit={handleLicenseValidation} className="space-y-6">
+              <div>
+                <label
+                  htmlFor="licenseKey"
+                  className="block text-white font-medium mb-2"
+                >
+                  License Key
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Key className="h-5 w-5 text-coffee-400" />
+                  </div>
+                  <input
+                    type="text"
+                    id="licenseKey"
+                    name="licenseKey"
+                    value={formData.licenseKey}
+                    onChange={handleInputChange}
+                    disabled={isSubmitting}
+                    className={`block w-full pl-10 pr-3 py-3 border rounded-lg bg-white/10 text-white placeholder-coffee-400 focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-transparent transition-colors ${
+                      errors.licenseKey ? "border-red-500" : "border-white/30"
+                    } ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+                    placeholder="Enter your license key"
+                  />
                 </div>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleInputChange}
-                  disabled={isBlocked || isLoading}
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-lg bg-white/10 text-white placeholder-coffee-400 focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-transparent transition-colors ${
-                    errors.username ? "border-red-500" : "border-white/30"
-                  } ${
-                    isBlocked || isLoading
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                  }`}
-                  placeholder="Enter admin username"
-                  autoComplete="username"
-                />
+                {errors.licenseKey && (
+                  <p className="mt-1 text-sm text-red-400">
+                    {errors.licenseKey}
+                  </p>
+                )}
               </div>
-              {errors.username && (
-                <p className="mt-1 text-sm text-red-400">{errors.username}</p>
-              )}
-            </div>
 
-            {/* Password Field */}
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-white font-medium mb-2"
+              <motion.button
+                type="submit"
+                disabled={isSubmitting}
+                whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+                className={`w-full py-3 px-4 rounded-lg font-semibold text-white transition-all duration-300 flex items-center justify-center space-x-2 ${
+                  isSubmitting
+                    ? "bg-gray-600 cursor-not-allowed opacity-50"
+                    : "bg-coffee-600 hover:bg-coffee-700 focus:outline-none focus:ring-2 focus:ring-coffee-500"
+                }`}
               >
-                Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-coffee-400" />
+                {isSubmitting ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Validating...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Validate License</span>
+                    <ArrowRight className="w-5 h-5" />
+                  </>
+                )}
+              </motion.button>
+            </form>
+          )}
+
+          {/* Login Step */}
+          {currentStep === "login" && (
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-white font-medium mb-2"
+                >
+                  Email
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-coffee-400" />
+                  </div>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    disabled={isSubmitting}
+                    className={`block w-full pl-10 pr-3 py-3 border rounded-lg bg-white/10 text-white placeholder-coffee-400 focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-transparent transition-colors ${
+                      errors.email ? "border-red-500" : "border-white/30"
+                    } ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+                    placeholder="Enter admin email"
+                  />
                 </div>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  disabled={isBlocked || isLoading}
-                  className={`block w-full pl-10 pr-12 py-3 border rounded-lg bg-white/10 text-white placeholder-coffee-400 focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-transparent transition-colors ${
-                    errors.password ? "border-red-500" : "border-white/30"
-                  } ${
-                    isBlocked || isLoading
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                  }`}
-                  placeholder="Enter admin password"
-                  autoComplete="current-password"
-                />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-400">{errors.email}</p>
+                )}
+              </div>
+
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block text-white font-medium mb-2"
+                >
+                  Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-coffee-400" />
+                  </div>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    disabled={isSubmitting}
+                    className={`block w-full pl-10 pr-12 py-3 border rounded-lg bg-white/10 text-white placeholder-coffee-400 focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-transparent transition-colors ${
+                      errors.password ? "border-red-500" : "border-white/30"
+                    } ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+                    placeholder="Enter admin password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    disabled={isSubmitting}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-coffee-400 hover:text-white transition-colors"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="mt-1 text-sm text-red-400">{errors.password}</p>
+                )}
+              </div>
+
+              <div className="flex space-x-3">
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={isBlocked || isLoading}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-coffee-400 hover:text-white transition-colors"
+                  onClick={goBackToLicense}
+                  disabled={isSubmitting}
+                  className="flex-1 py-3 px-4 rounded-lg font-semibold text-coffee-300 border border-coffee-400 hover:bg-white/10 transition-colors flex items-center justify-center space-x-2"
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                  ) : (
-                    <Eye className="h-5 w-5" />
-                  )}
+                  <ArrowLeft className="w-5 h-5" />
+                  <span>Back</span>
                 </button>
-              </div>
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-400">{errors.password}</p>
-              )}
-            </div>
 
-            {/* Login Attempts Warning */}
-            {loginAttempts > 0 && !isBlocked && (
-              <div className="p-3 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
-                <p className="text-yellow-300 text-sm text-center">
-                  ⚠️ {loginAttempts} failed attempt
-                  {loginAttempts > 1 ? "s" : ""}.{MAX_ATTEMPTS - loginAttempts}{" "}
-                  remaining before temporary block.
-                </p>
+                <motion.button
+                  type="submit"
+                  disabled={isSubmitting}
+                  whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                  whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+                  className={`flex-1 py-3 px-4 rounded-lg font-semibold text-white transition-all duration-300 flex items-center justify-center space-x-2 ${
+                    isSubmitting
+                      ? "bg-gray-600 cursor-not-allowed opacity-50"
+                      : "bg-coffee-600 hover:bg-coffee-700 focus:outline-none focus:ring-2 focus:ring-coffee-500"
+                  }`}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Logging in...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Shield className="w-5 h-5" />
+                      <span>Login</span>
+                    </>
+                  )}
+                </motion.button>
               </div>
+
+              {!adminExists && licenseValidated && (
+                <div className="text-center pt-4 border-t border-white/20">
+                  <p className="text-coffee-300 text-sm mb-2">
+                    Need to create an admin account?
+                  </p>
+                  <button
+                    type="button"
+                    onClick={switchToCreateAccount}
+                    disabled={isSubmitting}
+                    className="text-coffee-400 hover:text-white underline text-sm"
+                  >
+                    Create Admin Account
+                  </button>
+                </div>
+              )}
+            </form>
+          )}
+
+          {/* Create Account Step - Only show if no admin exists and license is validated */}
+          {currentStep === "create-account" &&
+            !adminExists &&
+            licenseValidated && (
+              <form onSubmit={handleCreateAccount} className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      htmlFor="firstName"
+                      className="block text-white font-medium mb-2"
+                    >
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      id="firstName"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
+                      className={`block w-full px-3 py-3 border rounded-lg bg-white/10 text-white placeholder-coffee-400 focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-transparent transition-colors ${
+                        errors.firstName ? "border-red-500" : "border-white/30"
+                      } ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+                      placeholder="First name"
+                    />
+                    {errors.firstName && (
+                      <p className="mt-1 text-sm text-red-400">
+                        {errors.firstName}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="lastName"
+                      className="block text-white font-medium mb-2"
+                    >
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      id="lastName"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
+                      className={`block w-full px-3 py-3 border rounded-lg bg-white/10 text-white placeholder-coffee-400 focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-transparent transition-colors ${
+                        errors.lastName ? "border-red-500" : "border-white/30"
+                      } ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+                      placeholder="Last name"
+                    />
+                    {errors.lastName && (
+                      <p className="mt-1 text-sm text-red-400">
+                        {errors.lastName}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-white font-medium mb-2"
+                  >
+                    Email
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Mail className="h-5 w-5 text-coffee-400" />
+                    </div>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
+                      className={`block w-full pl-10 pr-3 py-3 border rounded-lg bg-white/10 text-white placeholder-coffee-400 focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-transparent transition-colors ${
+                        errors.email ? "border-red-500" : "border-white/30"
+                      } ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+                      placeholder="Enter email address"
+                    />
+                  </div>
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-400">{errors.email}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="block text-white font-medium mb-2"
+                  >
+                    Password
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Lock className="h-5 w-5 text-coffee-400" />
+                    </div>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
+                      className={`block w-full pl-10 pr-12 py-3 border rounded-lg bg-white/10 text-white placeholder-coffee-400 focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-transparent transition-colors ${
+                        errors.password ? "border-red-500" : "border-white/30"
+                      } ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+                      placeholder="Create password (min. 8 characters)"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      disabled={isSubmitting}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-coffee-400 hover:text-white transition-colors"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
+                  {errors.password && (
+                    <p className="mt-1 text-sm text-red-400">
+                      {errors.password}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="confirmPassword"
+                    className="block text-white font-medium mb-2"
+                  >
+                    Confirm Password
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Lock className="h-5 w-5 text-coffee-400" />
+                    </div>
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
+                      className={`block w-full pl-10 pr-12 py-3 border rounded-lg bg-white/10 text-white placeholder-coffee-400 focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-transparent transition-colors ${
+                        errors.confirmPassword
+                          ? "border-red-500"
+                          : "border-white/30"
+                      } ${isSubmitting ? "opacity-50 cursor-not-allowed" : ""}`}
+                      placeholder="Confirm your password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      disabled={isSubmitting}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-coffee-400 hover:text-white transition-colors"
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
+                  {errors.confirmPassword && (
+                    <p className="mt-1 text-sm text-red-400">
+                      {errors.confirmPassword}
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex space-x-3">
+                  <button
+                    type="button"
+                    onClick={goBackToLicense}
+                    disabled={isSubmitting}
+                    className="flex-1 py-3 px-4 rounded-lg font-semibold text-coffee-300 border border-coffee-400 hover:bg-white/10 transition-colors flex items-center justify-center space-x-2"
+                  >
+                    <ArrowLeft className="w-5 h-5" />
+                    <span>Back</span>
+                  </button>
+
+                  <motion.button
+                    type="submit"
+                    disabled={isSubmitting}
+                    whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                    whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+                    className={`flex-1 py-3 px-4 rounded-lg font-semibold text-white transition-all duration-300 flex items-center justify-center space-x-2 ${
+                      isSubmitting
+                        ? "bg-gray-600 cursor-not-allowed opacity-50"
+                        : "bg-coffee-600 hover:bg-coffee-700 focus:outline-none focus:ring-2 focus:ring-coffee-500"
+                    }`}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        <span>Creating...</span>
+                      </>
+                    ) : (
+                      <>
+                        <UserPlus className="w-5 h-5" />
+                        <span>Create Account</span>
+                      </>
+                    )}
+                  </motion.button>
+                </div>
+              </form>
             )}
-
-            {/* Submit Button */}
-            <motion.button
-              type="submit"
-              disabled={isBlocked || isLoading}
-              whileHover={{ scale: isBlocked || isLoading ? 1 : 1.02 }}
-              whileTap={{ scale: isBlocked || isLoading ? 1 : 0.98 }}
-              className={`w-full py-3 px-4 rounded-lg font-semibold text-white transition-all duration-300 flex items-center justify-center space-x-2 ${
-                isBlocked || isLoading
-                  ? "bg-gray-600 cursor-not-allowed opacity-50"
-                  : "bg-coffee-600 hover:bg-coffee-700 focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:ring-offset-2 focus:ring-offset-transparent"
-              }`}
-            >
-              {isLoading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Authenticating...</span>
-                </>
-              ) : (
-                <>
-                  <Shield className="w-5 h-5" />
-                  <span>Secure Login</span>
-                </>
-              )}
-            </motion.button>
-          </form>
-
-          {/* Security Info */}
-          <div className="mt-6 pt-6 border-t border-white/20">
-            <div className="text-center">
-              <p className="text-coffee-300 text-sm">
-                🔒 This is a secure admin area
-              </p>
-              <p className="text-coffee-400 text-xs mt-1">
-                All login attempts are monitored and logged
-              </p>
-            </div>
-          </div>
         </motion.div>
 
         {/* Footer */}
@@ -401,6 +765,9 @@ const AdminLogin = () => {
         >
           <p className="text-coffee-400 text-sm">
             © 2025 Café Elite - Admin Portal
+          </p>
+          <p className="text-coffee-500 text-xs mt-1">
+            🔒 Secure license-based authentication
           </p>
         </motion.div>
       </motion.div>

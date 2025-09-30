@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import Navigation from "../components/Navigation";
+import Navigation from "../components/NavigationForMenu";
 import Menu from "../components/Menu";
 import Footer from "../components/Footer";
 import LoadingSpinner from "../components/LoadingSpinner";

@@ -1,364 +1,507 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "../utils/AuthContext";
 import {
-  LogOut,
-  Users,
-  ShoppingBag,
-  TrendingUp,
-  Settings,
-  Bell,
-  Calendar,
-  DollarSign,
-  Coffee,
-  ChevronDown,
-  RefreshCw,
-} from "lucide-react";
-import { useAuth } from "../contexts/AuthContext";
+  FaUsers,
+  FaChartLine,
+  FaClipboardList,
+  FaEnvelope,
+  FaCog,
+  FaSignOutAlt,
+  FaBell,
+  FaSearch,
+  FaPlus,
+  FaEye,
+  FaDollarSign,
+  FaCoffee,
+} from "react-icons/fa";
 
 const AdminDashboard = () => {
-  const { adminUser, logout, refreshSession } = useAuth();
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [dashboardData, setDashboardData] = useState({
-    totalOrders: 245,
-    totalRevenue: 12850,
-    activeCustomers: 89,
-    menuItems: 24,
-    recentOrders: [
-      {
-        id: 1,
-        customer: "John Doe",
-        items: "Espresso, Croissant",
-        total: 8.5,
-        time: "2 min ago",
-      },
-      {
-        id: 2,
-        customer: "Jane Smith",
-        items: "Latte, Muffin",
-        total: 12.0,
-        time: "5 min ago",
-      },
-      {
-        id: 3,
-        customer: "Mike Johnson",
-        items: "Cappuccino",
-        total: 6.5,
-        time: "8 min ago",
-      },
-      {
-        id: 4,
-        customer: "Sarah Wilson",
-        items: "Americano, Sandwich",
-        total: 15.0,
-        time: "12 min ago",
-      },
-    ],
-    popularItems: [
-      { name: "Espresso", orders: 45, change: "+12%" },
-      { name: "Latte", orders: 38, change: "+8%" },
-      { name: "Cappuccino", orders: 32, change: "+15%" },
-      { name: "Americano", orders: 28, change: "+5%" },
-    ],
-  });
+  const { logout } = useAuth();
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState("overview");
+  const [showNotifications, setShowNotifications] = useState(false);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-
-    return () => clearInterval(timer);
+    fetchDashboardData();
   }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        "http://localhost:5000/api/admin/dashboard",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch dashboard data");
+      }
+
+      const response_data = await response.json();
+      setDashboardData(response_data.data);
+    } catch (err) {
+      setError(err.message);
+      console.error("Dashboard fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       logout();
-      window.location.href = "/";
     }
   };
 
-  const handleRefreshSession = () => {
-    refreshSession();
-    // Show success message
-    const notification = document.createElement("div");
-    notification.className =
-      "fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50";
-    notification.textContent = "Session refreshed successfully!";
-    document.body.appendChild(notification);
+  const StatCard = ({ icon: Icon, title, value, change, color }) => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={`bg-white rounded-xl shadow-lg p-6 border-l-4 ${color}`}
+    >
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-gray-600 text-sm">{title}</p>
+          <p className="text-2xl font-bold text-gray-800">{value}</p>
+          {change && (
+            <p
+              className={`text-sm ${
+                change > 0 ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {change > 0 ? "+" : ""}
+              {change}% from last month
+            </p>
+          )}
+        </div>
+        <Icon className="text-3xl text-gray-400" />
+      </div>
+    </motion.div>
+  );
 
-    setTimeout(() => {
-      document.body.removeChild(notification);
-    }, 3000);
-  };
+  const QuickActionButton = ({ icon: Icon, title, onClick, color }) => (
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={onClick}
+      className={`${color} text-white px-6 py-3 rounded-lg flex items-center space-x-2 shadow-lg hover:shadow-xl transition-all duration-200`}
+    >
+      <Icon />
+      <span>{title}</span>
+    </motion.button>
+  );
 
-  const stats = [
-    {
-      title: "Total Orders",
-      value: dashboardData.totalOrders,
-      icon: ShoppingBag,
-      color: "bg-blue-500",
-      change: "+12%",
-    },
-    {
-      title: "Revenue",
-      value: `$${dashboardData.totalRevenue.toLocaleString()}`,
-      icon: DollarSign,
-      color: "bg-green-500",
-      change: "+18%",
-    },
-    {
-      title: "Active Customers",
-      value: dashboardData.activeCustomers,
-      icon: Users,
-      color: "bg-purple-500",
-      change: "+5%",
-    },
-    {
-      title: "Menu Items",
-      value: dashboardData.menuItems,
-      icon: Coffee,
-      color: "bg-orange-500",
-      change: "+2%",
-    },
-  ];
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full"
+        />
+        <span className="ml-4 text-xl text-gray-700">Loading dashboard...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center">
+        <div className="bg-white p-8 rounded-xl shadow-lg text-center">
+          <div className="text-red-500 text-5xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            Error Loading Dashboard
+          </h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button
+            onClick={fetchDashboardData}
+            className="bg-amber-500 text-white px-6 py-2 rounded-lg hover:bg-amber-600 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo & Title */}
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Coffee className="h-8 w-8 text-coffee-600" />
-                <h1 className="text-xl font-bold text-gray-900">
-                  Café Elite Admin
-                </h1>
-              </div>
+          <div className="flex justify-between items-center py-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Café Elite Admin
+              </h1>
+              <p className="text-gray-600">
+                Welcome back, {dashboardData?.admin?.name || "Admin"}
+              </p>
             </div>
-
-            {/* User Info & Actions */}
             <div className="flex items-center space-x-4">
-              {/* Current Time */}
-              <div className="text-sm text-gray-500">
-                {currentTime.toLocaleTimeString()}
-              </div>
-
               {/* Notifications */}
-              <button className="relative p-2 text-gray-400 hover:text-gray-500">
-                <Bell className="h-5 w-5" />
-                <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400"></span>
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  <FaBell className="text-xl" />
+                  {dashboardData?.notifications?.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {dashboardData.notifications.length}
+                    </span>
+                  )}
+                </button>
 
-              {/* Refresh Session */}
-              <button
-                onClick={handleRefreshSession}
-                className="p-2 text-gray-400 hover:text-gray-500 transition-colors"
-                title="Refresh Session"
-              >
-                <RefreshCw className="h-5 w-5" />
-              </button>
+                <AnimatePresence>
+                  {showNotifications && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border z-50"
+                    >
+                      <div className="p-4 border-b">
+                        <h3 className="font-semibold text-gray-900">
+                          Notifications
+                        </h3>
+                      </div>
+                      <div className="max-h-64 overflow-y-auto">
+                        {dashboardData?.notifications?.length > 0 ? (
+                          dashboardData.notifications.map((notif, index) => (
+                            <div
+                              key={index}
+                              className="p-3 border-b hover:bg-gray-50"
+                            >
+                              <p className="text-sm text-gray-800">
+                                {notif.message}
+                              </p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                {notif.time}
+                              </p>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="p-4 text-center text-gray-500">
+                            No new notifications
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
               {/* User Menu */}
               <div className="flex items-center space-x-3">
                 <div className="text-right">
                   <p className="text-sm font-medium text-gray-900">
-                    {adminUser?.username}
+                    {dashboardData?.admin?.name || "Admin"}
                   </p>
-                  <p className="text-xs text-gray-500">Administrator</p>
-                </div>
-                <div className="h-8 w-8 bg-coffee-600 rounded-full flex items-center justify-center">
-                  <span className="text-xs font-bold text-white">
-                    {adminUser?.username?.charAt(0).toUpperCase()}
-                  </span>
+                  <p className="text-xs text-gray-500">
+                    {dashboardData?.admin?.role || "Administrator"}
+                  </p>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                  className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition-colors"
                   title="Logout"
                 >
-                  <LogOut className="h-5 w-5" />
+                  <FaSignOutAlt />
                 </button>
               </div>
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Welcome back, {adminUser?.username}!
-          </h2>
-          <p className="text-gray-600">
-            Here's what's happening at Café Elite today.
-          </p>
-        </motion.div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <motion.div
-              key={stat.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-lg shadow p-6"
-            >
-              <div className="flex items-center">
-                <div className={`${stat.color} rounded-lg p-3`}>
-                  <stat.icon className="h-6 w-6 text-white" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
-                    {stat.title}
-                  </p>
-                  <div className="flex items-center">
-                    <p className="text-2xl font-semibold text-gray-900">
-                      {stat.value}
-                    </p>
-                    <span className="ml-2 text-sm font-medium text-green-600">
-                      {stat.change}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Recent Orders */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-white rounded-lg shadow"
-          >
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Recent Orders
-              </h3>
-            </div>
-            <div className="p-6">
-              <div className="space-y-4">
-                {dashboardData.recentOrders.map((order) => (
-                  <div
-                    key={order.id}
-                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
-                  >
-                    <div>
-                      <p className="font-medium text-gray-900">
-                        {order.customer}
-                      </p>
-                      <p className="text-sm text-gray-600">{order.items}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-gray-900">
-                        ${order.total}
-                      </p>
-                      <p className="text-xs text-gray-500">{order.time}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <button className="mt-4 w-full bg-coffee-600 text-white py-2 px-4 rounded-lg hover:bg-coffee-700 transition-colors">
-                View All Orders
-              </button>
-            </div>
-          </motion.div>
-
-          {/* Popular Items */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
-            className="bg-white rounded-lg shadow"
-          >
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Popular Items
-              </h3>
-            </div>
-            <div className="p-6">
-              <div className="space-y-4">
-                {dashboardData.popularItems.map((item, index) => (
-                  <div
-                    key={item.name}
-                    className="flex items-center justify-between"
-                  >
-                    <div className="flex items-center">
-                      <div className="w-8 h-8 bg-coffee-100 rounded-full flex items-center justify-center mr-3">
-                        <span className="text-coffee-600 font-semibold text-sm">
-                          {index + 1}
-                        </span>
-                      </div>
-                      <span className="font-medium text-gray-900">
-                        {item.name}
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-gray-900">
-                        {item.orders} orders
-                      </p>
-                      <p className="text-sm text-green-600">{item.change}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <button className="mt-4 w-full bg-coffee-600 text-white py-2 px-4 rounded-lg hover:bg-coffee-700 transition-colors">
-                Manage Menu
-              </button>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Quick Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mt-8"
-        >
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Quick Actions
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Navigation Tabs */}
+        <div className="mb-8">
+          <nav className="flex space-x-8">
             {[
-              {
-                title: "Manage Orders",
-                icon: ShoppingBag,
-                color: "bg-blue-500",
-              },
-              {
-                title: "View Analytics",
-                icon: TrendingUp,
-                color: "bg-green-500",
-              },
-              { title: "Settings", icon: Settings, color: "bg-purple-500" },
-            ].map((action, index) => (
+              { id: "overview", label: "Overview", icon: FaChartLine },
+              { id: "users", label: "Users", icon: FaUsers },
+              { id: "orders", label: "Orders", icon: FaClipboardList },
+              { id: "settings", label: "Settings", icon: FaCog },
+            ].map(({ id, label, icon: Icon }) => (
               <button
-                key={action.title}
-                className="flex items-center p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+                key={id}
+                onClick={() => setActiveTab(id)}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                  activeTab === id
+                    ? "bg-amber-500 text-white"
+                    : "text-gray-600 hover:text-amber-600 hover:bg-amber-50"
+                }`}
               >
-                <div className={`${action.color} rounded-lg p-3 mr-4`}>
-                  <action.icon className="h-6 w-6 text-white" />
-                </div>
-                <span className="font-medium text-gray-900">
-                  {action.title}
-                </span>
+                <Icon />
+                <span>{label}</span>
               </button>
             ))}
-          </div>
-        </motion.div>
-      </main>
+          </nav>
+        </div>
+
+        {/* Overview Tab */}
+        {activeTab === "overview" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="space-y-8"
+          >
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <StatCard
+                icon={FaUsers}
+                title="Total Users"
+                value={dashboardData?.stats?.totalUsers || 0}
+                change={12}
+                color="border-blue-500"
+              />
+              <StatCard
+                icon={FaClipboardList}
+                title="Total Orders"
+                value={dashboardData?.stats?.totalOrders || 0}
+                change={8}
+                color="border-green-500"
+              />
+              <StatCard
+                icon={FaEnvelope}
+                title="Messages"
+                value={dashboardData?.stats?.totalMessages || 0}
+                change={-3}
+                color="border-purple-500"
+              />
+              <StatCard
+                icon={FaDollarSign}
+                title="Revenue"
+                value={`$${dashboardData?.stats?.totalRevenue || 0}`}
+                change={15}
+                color="border-amber-500"
+              />
+            </div>
+
+            {/* Quick Actions */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
+                Quick Actions
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <QuickActionButton
+                  icon={FaPlus}
+                  title="Add Menu Item"
+                  color="bg-green-500 hover:bg-green-600"
+                  onClick={() => console.log("Add menu item")}
+                />
+                <QuickActionButton
+                  icon={FaEye}
+                  title="View Orders"
+                  color="bg-blue-500 hover:bg-blue-600"
+                  onClick={() => setActiveTab("orders")}
+                />
+                <QuickActionButton
+                  icon={FaUsers}
+                  title="Manage Users"
+                  color="bg-purple-500 hover:bg-purple-600"
+                  onClick={() => setActiveTab("users")}
+                />
+                <QuickActionButton
+                  icon={FaCog}
+                  title="Settings"
+                  color="bg-gray-500 hover:bg-gray-600"
+                  onClick={() => setActiveTab("settings")}
+                />
+              </div>
+            </div>
+
+            {/* Recent Activity */}
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
+                Recent Activity
+              </h3>
+              <div className="space-y-4">
+                {dashboardData?.recentActivity?.length > 0 ? (
+                  dashboardData.recentActivity.map((activity, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    >
+                      <div>
+                        <p className="text-gray-800">{activity.description}</p>
+                        <p className="text-sm text-gray-500">{activity.time}</p>
+                      </div>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium ${
+                          activity.type === "order"
+                            ? "bg-green-100 text-green-800"
+                            : activity.type === "user"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {activity.type}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500 text-center py-8">
+                    No recent activity
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Admin Info Card */}
+            <div className="bg-gradient-to-r from-amber-600 to-amber-700 rounded-xl shadow-lg p-6 text-white">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Admin Account Information
+                  </h3>
+                  <div className="space-y-1 text-amber-100">
+                    <p>
+                      <span className="font-medium">Email:</span>{" "}
+                      {dashboardData?.admin?.email || "admin@example.com"}
+                    </p>
+                    <p>
+                      <span className="font-medium">Role:</span>{" "}
+                      {dashboardData?.admin?.role || "Administrator"}
+                    </p>
+                    <p>
+                      <span className="font-medium">License Key:</span>{" "}
+                      {dashboardData?.admin?.licenseKey || "Not available"}
+                    </p>
+                    <p>
+                      <span className="font-medium">Last Login:</span>{" "}
+                      {dashboardData?.admin?.lastLogin || "Never"}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-6xl opacity-20">
+                  <FaCoffee />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Users Tab */}
+        {activeTab === "users" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-white rounded-xl shadow-lg p-6"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-gray-900">
+                User Management
+              </h3>
+              <div className="flex items-center space-x-4">
+                <div className="relative">
+                  <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search users..."
+                    className="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="text-center py-12 text-gray-500">
+              <FaUsers className="text-4xl mx-auto mb-4" />
+              <p>User management functionality coming soon</p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Orders Tab */}
+        {activeTab === "orders" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-white rounded-xl shadow-lg p-6"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-gray-900">
+                Order Management
+              </h3>
+              <button
+                onClick={fetchDashboardData}
+                className="bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 transition-colors flex items-center space-x-2"
+              >
+                <FaRefresh />
+                <span>Refresh</span>
+              </button>
+            </div>
+
+            {dashboardData?.recentActivity?.length > 0 ? (
+              <div className="space-y-4">
+                <h4 className="font-semibold text-gray-800 mb-4">
+                  Recent Orders
+                </h4>
+                {dashboardData.recentActivity
+                  .filter((activity) => activity.type === "order")
+                  .map((activity, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                    >
+                      <div>
+                        <p className="font-medium text-gray-800">
+                          {activity.description}
+                        </p>
+                        <p className="text-sm text-gray-500">{activity.time}</p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <button className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600">
+                          View
+                        </button>
+                        <button className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600">
+                          Update Status
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 text-gray-500">
+                <FaClipboardList className="text-4xl mx-auto mb-4" />
+                <p>
+                  No orders yet. Orders will appear here when customers place
+                  them.
+                </p>
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {/* Settings Tab */}
+        {activeTab === "settings" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="space-y-6"
+          >
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
+                System Settings
+              </h3>
+              <div className="text-center py-12 text-gray-500">
+                <FaCog className="text-4xl mx-auto mb-4" />
+                <p>Settings panel coming soon</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 };

@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Admin = require('../models/Admin');
+const Order = require('../models/Order');
 const LicenseKeyGenerator = require('../utils/licenseGenerator');
 const emailService = require('../utils/emailService');
 const { 
@@ -390,6 +391,15 @@ router.get('/dashboard', verifyToken, verifyAdmin, async (req, res) => {
       });
     }
 
+    // Get order statistics
+    const orderStats = await Order.getOrderStats();
+    
+    // Get recent orders
+    const recentOrders = await Order.find()
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select('orderNumber customerInfo totalAmount status createdAt');
+
     res.status(200).json({
       success: true,
       message: 'Welcome to admin dashboard.',
@@ -407,11 +417,19 @@ router.get('/dashboard', verifyToken, verifyAdmin, async (req, res) => {
         },
         stats: {
           totalUsers: 0, // Placeholder - connect to database later
-          totalOrders: 0,
-          totalRevenue: 0,
+          totalOrders: orderStats.totalOrders,
+          totalRevenue: orderStats.totalRevenue,
+          totalMessages: 0, // Placeholder
+          pendingOrders: orderStats.pendingOrders,
+          preparingOrders: orderStats.preparingOrders,
           lastLogin: admin.lastLogin,
           accountCreated: admin.createdAt
-        }
+        },
+        recentActivity: recentOrders.map(order => ({
+          description: `New order #${order.orderNumber} from ${order.customerInfo.name}`,
+          time: order.createdAt.toLocaleString(),
+          type: 'order'
+        }))
       }
     });
   } catch (error) {
@@ -440,6 +458,118 @@ router.get('/menu', verifyToken, verifyAdmin, (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error fetching menu items.'
+    });
+  }
+});
+
+// GET /api/admin/orders - Get all orders for admin management
+router.get('/orders', verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const { status, page = 1, limit = 20 } = req.query;
+    
+    const query = {};
+    if (status) {
+      query.status = status;
+    }
+
+    const orders = await Order.find(query)
+      .sort({ createdAt: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+
+    const totalOrders = await Order.countDocuments(query);
+
+    res.status(200).json({
+      success: true,
+      message: 'Orders retrieved successfully.',
+      data: {
+        orders,
+        pagination: {
+          currentPage: page,
+          totalPages: Math.ceil(totalOrders / limit),
+          totalOrders,
+          hasNext: page * limit < totalOrders,
+          hasPrev: page > 1
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Orders fetch error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching orders.'
+    });
+  }
+});
+
+// PUT /api/admin/orders/:id/status - Update order status
+router.put('/orders/:id/status', verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const validStatuses = ['pending', 'preparing', 'ready', 'completed', 'cancelled'];
+    
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid status. Valid statuses: ' + validStatuses.join(', ')
+      });
+    }
+
+    const order = await Order.findById(id);
+    
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found.'
+      });
+    }
+
+    await order.updateStatus(status);
+
+    res.status(200).json({
+      success: true,
+      message: `Order status updated to ${status}.`,
+      data: {
+        orderNumber: order.orderNumber,
+        status: order.status,
+        updatedAt: order.updatedAt
+      }
+    });
+  } catch (error) {
+    console.error('Order status update error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating order status.'
+    });
+  }
+});
+
+// GET /api/admin/orders/:id - Get specific order details
+router.get('/orders/:id', verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const order = await Order.findById(id);
+    
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found.'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Order details retrieved.',
+      data: order
+    });
+  } catch (error) {
+    console.error('Order details error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching order details.'
     });
   }
 });

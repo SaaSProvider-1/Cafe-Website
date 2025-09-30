@@ -10,7 +10,7 @@ const QRCodeMenu = () => {
 
   useEffect(() => {
     // Get the current domain and create URL for QR menu page
-    const currentDomain = window.location.origin;
+    const currentDomain = "https://cafe-website-gules.vercel.app";
     const menuUrl = `${currentDomain}/qr-menu`;
     setQrValue(menuUrl);
   }, []);
