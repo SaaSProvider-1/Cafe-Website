@@ -207,3 +207,19 @@
 {"level":"info","message":"POST /api/orders - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 17:06:26"}
 {"level":"info","message":"New order created: CE20250930006 for lsdjflsd","service":"cafe-elite-api","timestamp":"2025-09-30 17:06:26"}
 {"level":"info","message":"🛑 SIGINT received. Shutting down gracefully...","service":"cafe-elite-api","timestamp":"2025-09-30 17:22:03"}
+{"level":"info","message":"🚀 Café Elite API server running on port 5000","service":"cafe-elite-api","timestamp":"2025-09-30 17:22:10"}
+{"level":"info","message":"🌍 Environment: development","service":"cafe-elite-api","timestamp":"2025-09-30 17:22:10"}
+{"level":"info","message":"📡 API Base URL: http://localhost:5000/api","service":"cafe-elite-api","timestamp":"2025-09-30 17:22:10"}
+{"level":"info","message":"🔗 Mongoose connected to MongoDB","service":"cafe-elite-api","timestamp":"2025-09-30 17:22:11"}
+{"level":"info","message":"✅ MongoDB connected successfully","service":"cafe-elite-api","timestamp":"2025-09-30 17:22:11"}
+{"level":"info","message":"POST /api/newsletter/subscribe - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 17:22:18"}
+{"level":"info","message":"POST /api/newsletter/subscribe - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 17:23:13"}
+{"level":"info","message":"POST /api/admin/validate-license - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 17:24:02"}
+{"level":"info","message":"POST /api/admin/validate-license - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 17:24:23"}
+{"level":"info","message":"POST /api/admin/request-license - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 17:24:53"}
+{"level":"info","message":"POST /api/admin/validate-license - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 17:25:17"}
+{"level":"info","message":"POST /api/admin/create-account - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 17:25:49"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 17:25:54"}
+{"level":"info","message":"GET /api/admin/dashboard - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 17:25:56"}
+{"level":"info","message":"GET /api/admin/orders - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 17:26:25"}
+{"level":"info","message":"POST /api/admin/logout - ::ffff:127.0.0.1","service":"cafe-elite-api","timestamp":"2025-09-30 17:26:55"}
