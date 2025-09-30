@@ -14,6 +14,7 @@ import {
   FaEye,
   FaDollarSign,
   FaCoffee,
+  FaRefresh,
 } from "react-icons/fa";
 
 const AdminDashboard = () => {
@@ -23,10 +24,19 @@ const AdminDashboard = () => {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
   const [showNotifications, setShowNotifications] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
 
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  // Fetch orders when orders tab is selected
+  useEffect(() => {
+    if (activeTab === 'orders') {
+      fetchOrders();
+    }
+  }, [activeTab]);
 
   const fetchDashboardData = async () => {
     try {
@@ -52,6 +62,54 @@ const AdminDashboard = () => {
       console.error("Dashboard fetch error:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchOrders = async () => {
+    try {
+      setOrdersLoading(true);
+      const response = await fetch("http://localhost:5000/api/admin/orders", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch orders");
+      }
+
+      const response_data = await response.json();
+      setOrders(response_data.data.orders);
+    } catch (err) {
+      console.error("Orders fetch error:", err);
+    } finally {
+      setOrdersLoading(false);
+    }
+  };
+
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/admin/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update order status");
+      }
+
+      // Refresh orders after update
+      fetchOrders();
+      // Also refresh dashboard to update stats
+      fetchDashboardData();
+    } catch (err) {
+      console.error("Order status update error:", err);
+      alert('Failed to update order status');
     }
   };
 
@@ -427,59 +485,140 @@ const AdminDashboard = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-white rounded-xl shadow-lg p-6"
+            className="space-y-6"
           >
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-gray-900">
-                Order Management
-              </h3>
-              <button
-                onClick={fetchDashboardData}
-                className="bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 transition-colors flex items-center space-x-2"
-              >
-                <FaRefresh />
-                <span>Refresh</span>
-              </button>
-            </div>
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-gray-900">
+                  Order Management
+                </h3>
+                <button
+                  onClick={fetchOrders}
+                  className="bg-amber-500 text-white px-4 py-2 rounded-lg hover:bg-amber-600 transition-colors flex items-center space-x-2"
+                >
+                  <FaRefresh />
+                  <span>Refresh</span>
+                </button>
+              </div>
 
-            {dashboardData?.recentActivity?.length > 0 ? (
-              <div className="space-y-4">
-                <h4 className="font-semibold text-gray-800 mb-4">
-                  Recent Orders
-                </h4>
-                {dashboardData.recentActivity
-                  .filter((activity) => activity.type === "order")
-                  .map((activity, index) => (
+              {ordersLoading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto mb-4"></div>
+                  <p className="text-gray-600">Loading orders...</p>
+                </div>
+              ) : orders.length > 0 ? (
+                <div className="space-y-4">
+                  {orders.map((order) => (
                     <div
-                      key={index}
-                      className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                      key={order._id}
+                      className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
                     >
-                      <div>
-                        <p className="font-medium text-gray-800">
-                          {activity.description}
-                        </p>
-                        <p className="text-sm text-gray-500">{activity.time}</p>
-                      </div>
-                      <div className="flex space-x-2">
-                        <button className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600">
-                          View
-                        </button>
-                        <button className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600">
-                          Update Status
-                        </button>
+                      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                        {/* Order Info */}
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-4 mb-3">
+                            <h4 className="text-lg font-semibold text-gray-900">
+                              Order #{order.orderNumber}
+                            </h4>
+                            <span
+                              className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                order.status === 'pending'
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : order.status === 'preparing'
+                                  ? 'bg-blue-100 text-blue-800'
+                                  : order.status === 'ready'
+                                  ? 'bg-green-100 text-green-800'
+                                  : order.status === 'completed'
+                                  ? 'bg-gray-100 text-gray-800'
+                                  : 'bg-red-100 text-red-800'
+                              }`}
+                            >
+                              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                            </span>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+                            <div>
+                              <p><strong>Customer:</strong> {order.customerInfo.name}</p>
+                              <p><strong>Phone:</strong> {order.customerInfo.phone}</p>
+                              {order.customerInfo.email && (
+                                <p><strong>Email:</strong> {order.customerInfo.email}</p>
+                              )}
+                            </div>
+                            <div>
+                              <p><strong>Total:</strong> ${order.totalAmount.toFixed(2)}</p>
+                              <p><strong>Items:</strong> {order.items.length}</p>
+                              <p><strong>Time:</strong> {new Date(order.createdAt).toLocaleString()}</p>
+                            </div>
+                          </div>
+
+                          {/* Order Items */}
+                          <div className="mt-4">
+                            <p className="text-sm font-medium text-gray-700 mb-2">Items:</p>
+                            <div className="space-y-1">
+                              {order.items.map((item, index) => (
+                                <div key={index} className="flex justify-between text-sm text-gray-600">
+                                  <span>{item.name} x{item.quantity}</span>
+                                  <span>${(item.price * item.quantity).toFixed(2)}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {order.specialInstructions && (
+                            <div className="mt-3">
+                              <p className="text-sm font-medium text-gray-700">Special Instructions:</p>
+                              <p className="text-sm text-gray-600">{order.specialInstructions}</p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex flex-col space-y-2 lg:ml-6">
+                          {order.status === 'pending' && (
+                            <button
+                              onClick={() => updateOrderStatus(order._id, 'preparing')}
+                              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors text-sm"
+                            >
+                              Start Preparing
+                            </button>
+                          )}
+                          {order.status === 'preparing' && (
+                            <button
+                              onClick={() => updateOrderStatus(order._id, 'ready')}
+                              className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors text-sm"
+                            >
+                              Mark Ready
+                            </button>
+                          )}
+                          {order.status === 'ready' && (
+                            <button
+                              onClick={() => updateOrderStatus(order._id, 'completed')}
+                              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors text-sm"
+                            >
+                              Complete Order
+                            </button>
+                          )}
+                          {(order.status === 'pending' || order.status === 'preparing') && (
+                            <button
+                              onClick={() => updateOrderStatus(order._id, 'cancelled')}
+                              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm"
+                            >
+                              Cancel
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}
-              </div>
-            ) : (
-              <div className="text-center py-12 text-gray-500">
-                <FaClipboardList className="text-4xl mx-auto mb-4" />
-                <p>
-                  No orders yet. Orders will appear here when customers place
-                  them.
-                </p>
-              </div>
-            )}
+                </div>
+              ) : (
+                <div className="text-center py-12 text-gray-500">
+                  <FaClipboardList className="text-4xl mx-auto mb-4" />
+                  <p>No orders yet. Orders will appear here when customers place them.</p>
+                </div>
+              )}
+            </div>
           </motion.div>
         )}
 
