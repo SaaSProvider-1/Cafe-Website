@@ -17,6 +17,10 @@ const menuRoutes = require('./routes/menu');
 const orderRoutes = require('./routes/orders');
 const contactRoutes = require('./routes/contact');
 const reviewRoutes = require('./routes/reviews');
+const adminRoutes = require('./routes/admin');
+
+// Import admin security middleware
+const { securityHeaders } = require('./middleware/adminAuth');
 
 const app = express();
 
@@ -42,6 +46,9 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 app.use(limiter);
+
+// Additional security headers for admin routes
+app.use(securityHeaders);
 
 // CORS configuration
 const corsOptions = {
@@ -85,6 +92,7 @@ app.use('/api/menu', menuRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Welcome endpoint
 app.get('/', (req, res) => {
@@ -99,6 +107,7 @@ app.get('/', (req, res) => {
       orders: '/api/orders',
       contact: '/api/contact',
       reviews: '/api/reviews',
+      admin: '/api/admin',
     },
   });
 });

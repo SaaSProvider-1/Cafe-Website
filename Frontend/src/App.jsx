@@ -1,25 +1,58 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
-import SignUpPage from "./pages/SignUpPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/ResetPasswordPage";
+import MenuPage from "./pages/MenuPage";
+import QRMenuPage from "./pages/QRMenuPage";
+import AdminLogin from "./components/AdminLogin";
+import AdminSignup from "./components/AdminSignup";
+import AdminDashboard from "./components/AdminDashboard";
 import "./App.css";
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-        </Routes>
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <div className="App">
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/menu" element={<MenuPage />} />
+            <Route path="/qr-menu" element={<QRMenuPage />} />
+
+            {/* Admin Routes */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <AdminLogin />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/admin/signup" element={<AdminSignup />} />
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute requireAuth={true}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Catch-all route for admin paths */}
+            <Route
+              path="/admin/*"
+              element={
+                <ProtectedRoute requireAuth={true}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 

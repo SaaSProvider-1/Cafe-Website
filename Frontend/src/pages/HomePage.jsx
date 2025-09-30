@@ -9,6 +9,7 @@ import AdvancedGallery from "../components/AdvancedGallery";
 import AdvancedContact from "../components/AdvancedContact";
 import Footer from "../components/Footer";
 import AdvancedTestimonials from "../components/AdvancedTestimonials";
+import QRCodeMenu from "../components/QRCodeMenu";
 import LoadingScreen from "../components/LoadingScreen";
 
 const HomePage = () => {
@@ -103,6 +104,7 @@ const HomePage = () => {
             <Hero />
             <About />
             <BookMenu />
+            <QRCodeMenu />
             <AdvancedTestimonials />
             <AdvancedGallery />
             <AdvancedContact />
