@@ -1,4 +1,0 @@
-{"level":"error","message":"❌ MongoDB connection failed:","service":"cafe-elite-api","timestamp":"2025-09-28 16:12:57"}
-{"level":"error","message":"💥 Unhandled Promise Rejection:","service":"cafe-elite-api","timestamp":"2025-09-30 12:49:18"}
-{"level":"error","message":"💥 Unhandled Promise Rejection:","service":"cafe-elite-api","timestamp":"2025-09-30 12:55:24"}
-{"level":"error","message":"💥 Unhandled Promise Rejection:","service":"cafe-elite-api","timestamp":"2025-09-30 13:17:06"}
