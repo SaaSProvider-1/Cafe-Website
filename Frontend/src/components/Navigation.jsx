@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Coffee } from "lucide-react";
 
 const Navigation = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -17,6 +18,23 @@ const Navigation = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Handle hash navigation on page load and location change
+  useEffect(() => {
+    const hash = location.hash;
+    if (hash) {
+      // Small delay to ensure the page is fully loaded
+      const timeoutId = setTimeout(() => {
+        const sectionId = hash.substring(1);
+        const element = document.querySelector(`#${sectionId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [location]);
+
   const navItems = [
     { name: "Home", href: "/" },
     { name: "About", href: "/#about" },
@@ -26,28 +44,35 @@ const Navigation = () => {
     { name: "Contact", href: "/#contact" },
   ];
 
-  const scrollToSection = (href) => {
-    if (href.startsWith("/#")) {
-      // If we're not on home page, navigate to home first
-      if (location.pathname !== "/") {
-        window.location.href = href;
-        return;
-      }
-      // If on home page, scroll to section
-      const sectionId = href.substring(2);
-      const element = document.querySelector(`#${sectionId}`);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
+  const scrollToSection = (sectionId) => {
+    const element = document.querySelector(`#${sectionId}`);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-    setIsMobileMenuOpen(false);
   };
 
-  const handleNavClick = (item) => {
+  const handleNavClick = (e, item) => {
+    e.preventDefault();
+    setIsMobileMenuOpen(false);
+    
     if (item.href.startsWith("/#")) {
-      scrollToSection(item.href);
-    } else {
-      setIsMobileMenuOpen(false);
+      const sectionId = item.href.substring(2);
+      
+      // If we're not on home page, navigate to home with hash
+      if (location.pathname !== "/") {
+        // Navigate to home page first, then add hash
+        navigate("/", { replace: false });
+        // Use setTimeout to ensure navigation completes before setting hash
+        setTimeout(() => {
+          window.location.hash = sectionId;
+          scrollToSection(sectionId);
+        }, 100);
+        return;
+      }
+      
+      // If on home page, update hash and scroll to section
+      window.location.hash = sectionId;
+      scrollToSection(sectionId);
     }
   };
 
@@ -106,7 +131,7 @@ const Navigation = () => {
               >
                 {item.href.startsWith("/#") ? (
                   <button
-                    onClick={() => handleNavClick(item)}
+                    onClick={(e) => handleNavClick(e, item)}
                     className={`font-medium transition-all duration-300 hover:scale-105 ${
                       isScrolled
                         ? "text-coffee-700 hover:text-coffee-900"
@@ -166,7 +191,7 @@ const Navigation = () => {
                 >
                   {item.href.startsWith("/#") ? (
                     <button
-                      onClick={() => handleNavClick(item)}
+                      onClick={(e) => handleNavClick(e, item)}
                       className="block w-full text-left text-coffee-700 hover:text-coffee-900 font-medium py-3 px-4 rounded-xl hover:bg-coffee-50 transition-colors duration-200"
                     >
                       {item.name}

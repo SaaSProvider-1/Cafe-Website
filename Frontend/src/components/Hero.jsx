@@ -14,8 +14,8 @@ import {
   CoffeeWaves,
 } from "./ElegantCoffeeAnimations";
 
-
 const Hero = () => {
+  const [isMobile] = useState(window.innerWidth < 768);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
@@ -91,8 +91,78 @@ const Hero = () => {
       {/* Light floating coffee beans */}
       <FloatingCoffeeBeansAnimation className="absolute inset-0 z-5" />
 
+      {/* Content - Positioned at Left Side */}
+      <div className="relative z-10 flex items-start justify-center mt-20 h-full w-100 sm:justify-start">
+        <div className="max-w-3xl lg:ml-16 text-center lg:px-8">
+          {slides.map((slide, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{
+                opacity: index === currentSlide ? 1 : 0,
+                y: index === currentSlide ? 0 : 30,
+              }}
+              transition={{ duration: 1, delay: 0.3 }}
+              className={`${index === currentSlide ? "block" : "hidden"}`}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1, delay: 0.5 }}
+              >
+                <h1 className="font-display text-4xl md:text-7xl lg:text-8xl font-bold text-white mb-4 lg:mb-6 leading-tight">
+                  <span className="block">{slide.title.split(" ")[0]}</span>
+                  <span className="block gradient-text bg-gradient-to-r from-cream-300 to-cream-500 bg-clip-text text-transparent">
+                    {slide.title.split(" ").slice(1).join(" ")}
+                  </span>
+                </h1>
+              </motion.div>
+
+              <motion.p
+                className="text-md md:text-2xl text-center lg:text-start text-cream-100 mb-4 lg:mb-10 max-w-2xl mx-auto"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.7 }}
+              >
+                {slide.subtitle}
+              </motion.p>
+
+              <motion.div
+                className="flex flex-row gap-3 lg:gap-4 justify-start items-center"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.9 }}
+              >
+                <motion.button
+                  whileHover={{
+                    scale: 1.05,
+                    boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={scrollToMenu}
+                  className="btn-primary text-md lg:text-lg px-6 lg:px-10 lg:py-4 py-3"
+                >
+                  {slide.cta}
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex items-center space-x-2 text-white hover:text-cream-200 transition-colors duration-300"
+                >
+                  <div className="w-12 h-12 rounded-full border-2 border-white flex items-center justify-center hover:bg-white hover:text-coffee-900 transition-all duration-300">
+                    <Play size={20} />
+                  </div>
+                  <span className="font-medium">Watch Our Story</span>
+                </motion.button>
+              </motion.div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
       {/* Floating Coffee Gallery Images - Positioned at Right Corner */}
-      <div className="absolute top-16 right-8 z-10">
+      <div className="absolute top-80 lg:top-16 right-8 z-10 w-80 h-60 md:block">
         {/* Image 1 - Top Right */}
         <motion.div
           animate={{
@@ -104,7 +174,7 @@ const Hero = () => {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute top-0 right-0 w-32 h-32 rounded-lg overflow-hidden border-4 border-white shadow-2xl transform rotate-12"
+          className="absolute top-0 right-0 w-20 h-20 lg:w-32 lg:h-32 rounded-lg overflow-hidden border-4 border-white shadow-2xl transform rotate-12"
         >
           <img
             src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop&auto=format"
@@ -125,7 +195,7 @@ const Hero = () => {
             ease: "easeInOut",
             delay: 1,
           }}
-          className="absolute top-24 right-16 w-28 h-28 rounded-lg overflow-hidden border-4 border-white shadow-2xl transform -rotate-6"
+          className="absolute top-6 lg:top-24 right-16 w-24 h-24 lg:w-28 lg:h-28 rounded-lg overflow-hidden border-4 border-white shadow-2xl transform -rotate-6"
         >
           <img
             src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=400&h=400&fit=crop&auto=format"
@@ -146,7 +216,8 @@ const Hero = () => {
             ease: "easeInOut",
             delay: 2,
           }}
-          className="absolute top-48 right-4 w-30 h-30 rounded-lg overflow-hidden border-4 border-white shadow-2xl transform rotate-8"
+          className="absolute top-32 lg:top-48 right-4 lg:w-30 lg:h-30 rounded-lg overflow-hidden border-4 border-white shadow-2xl transform rotate-8"
+          style={{ width: isMobile ? "200px" : "", height: isMobile ? "200px" : "" }}
         >
           <img
             src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=400&fit=crop&auto=format"
@@ -167,7 +238,8 @@ const Hero = () => {
             ease: "easeInOut",
             delay: 0.5,
           }}
-          className="absolute top-32 right-40 w-26 h-26 rounded-lg overflow-hidden border-4 border-white shadow-2xl transform -rotate-12"
+          className="absolute top-32 right-28 lg:right-40 lg:w-26 lg:h-26 rounded-lg overflow-hidden border-4 border-white shadow-2xl transform -rotate-12"
+          style={{ width: isMobile ? "240px" : "", height: isMobile ? "240px" : "" }}
         >
           <img
             src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400&h=400&fit=crop&auto=format"
@@ -188,7 +260,7 @@ const Hero = () => {
             ease: "easeInOut",
             delay: 3,
           }}
-          className="absolute top-8 right-28 w-24 h-24 rounded-lg overflow-hidden border-4 border-white shadow-2xl transform rotate-15"
+          className="absolute top-14 lg:top-8 right-36 lg:right-28 w-24 h-24 rounded-lg overflow-hidden border-4 border-white shadow-2xl transform rotate-15"
         >
           <img
             src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400&h=400&fit=crop&auto=format"
@@ -196,76 +268,6 @@ const Hero = () => {
             className="w-full h-full object-cover"
           />
         </motion.div>
-      </div>
-
-      {/* Content - Positioned at Left Side */}
-      <div className="relative z-10 flex items-center justify-start h-full">
-        <div className="max-w-3xl ml-8 lg:ml-16 text-left px-4 sm:px-6 lg:px-8">
-          {slides.map((slide, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{
-                opacity: index === currentSlide ? 1 : 0,
-                y: index === currentSlide ? 0 : 30,
-              }}
-              transition={{ duration: 1, delay: 0.3 }}
-              className={`${index === currentSlide ? "block" : "hidden"}`}
-            >
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1, delay: 0.5 }}
-              >
-                <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight">
-                  <span className="block">{slide.title.split(" ")[0]}</span>
-                  <span className="block gradient-text bg-gradient-to-r from-cream-300 to-cream-500 bg-clip-text text-transparent">
-                    {slide.title.split(" ").slice(1).join(" ")}
-                  </span>
-                </h1>
-              </motion.div>
-
-              <motion.p
-                className="text-xl md:text-2xl text-cream-100 mb-10 max-w-2xl mx-auto"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.7 }}
-              >
-                {slide.subtitle}
-              </motion.p>
-
-              <motion.div
-                className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.9 }}
-              >
-                <motion.button
-                  whileHover={{
-                    scale: 1.05,
-                    boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={scrollToMenu}
-                  className="btn-primary text-lg px-10 py-4"
-                >
-                  {slide.cta}
-                </motion.button>
-
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center space-x-2 text-white hover:text-cream-200 transition-colors duration-300"
-                >
-                  <div className="w-12 h-12 rounded-full border-2 border-white flex items-center justify-center hover:bg-white hover:text-coffee-900 transition-all duration-300">
-                    <Play size={20} />
-                  </div>
-                  <span className="font-medium">Watch Our Story</span>
-                </motion.button>
-              </motion.div>
-            </motion.div>
-          ))}
-        </div>
       </div>
 
       {/* Slide Indicators */}

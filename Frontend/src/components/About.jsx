@@ -119,7 +119,7 @@ const About = () => {
               animationType="stretch"
               intensity="high"
             >
-              Crafting Perfect Coffee
+              Crafting Perfect Coffee{" "}
               <StretchableSpan className="block gradient-text" animationType="glow" intensity="high">Since 2015</StretchableSpan>
             </StretchableH2>
           </motion.div>
