@@ -92,7 +92,7 @@ const Hero = () => {
       <FloatingCoffeeBeansAnimation className="absolute inset-0 z-5" />
 
       {/* Content - Positioned at Left Side */}
-      <div className="relative z-10 flex items-start justify-center mt-20 h-full w-100 sm:justify-start">
+      <div className="relative top-0 lg:top-28 left-0 lg:left-16 z-10 flex items-start justify-center lg:justify-start mt-20 h-full w-100">
         <div className="max-w-3xl lg:ml-16 text-center lg:px-8">
           {slides.map((slide, index) => (
             <motion.div
@@ -110,7 +110,7 @@ const Hero = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 1, delay: 0.5 }}
               >
-                <h1 className="font-display text-4xl md:text-7xl lg:text-8xl font-bold text-white mb-4 lg:mb-6 leading-tight">
+                <h1 className="font-display text-center lg:text-start text-4xl md:text-7xl lg:text-7xl font-bold text-white mb-4 lg:mb-6 leading-tight">
                   <span className="block">{slide.title.split(" ")[0]}</span>
                   <span className="block gradient-text bg-gradient-to-r from-cream-300 to-cream-500 bg-clip-text text-transparent">
                     {slide.title.split(" ").slice(1).join(" ")}
@@ -162,7 +162,7 @@ const Hero = () => {
       </div>
 
       {/* Floating Coffee Gallery Images - Positioned at Right Corner */}
-      <div className="absolute top-80 lg:top-16 right-8 z-10 w-80 h-60 md:block">
+      <div className="absolute top-80 lg:top-36 right-8 lg:right-36 z-10 w-80 h-60 md:block">
         {/* Image 1 - Top Right */}
         <motion.div
           animate={{
